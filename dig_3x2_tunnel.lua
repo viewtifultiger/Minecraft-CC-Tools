@@ -4,12 +4,16 @@ local tunnel = tunnel_3x1
 local ct = codetools
 
 -- settings
-local placeTorches = ct.verifyTorchDownSetting(true)
-
+local placeTorches = ct.verifyTorchDownSetting(false)
+if placeTorches then
+	print("\nplaceTorches: ON")
+else
+	print("\nplaceTorches: OFF")
+end
 -- TO DO --
 -- handle finding bedrock during first half
--- mine extra when gravel falls from above
 -- make it continuously loop
+-- place dig settings into a different file (rename files)
 
 startingFuel, fuelCost = ct.hasFuelExpense()
 
@@ -35,5 +39,6 @@ else
 	tunnel.dig(fuelCost)
 end
 
+print("Complete!")
 print("Fuel Remaining:", turtle.getFuelLevel())
 print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())

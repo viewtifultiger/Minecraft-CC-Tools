@@ -39,26 +39,33 @@ end
 -- have Enter key also pass pullEvent
 function verifyTorchDownSetting(bool) --> bool : placeTorches
     if bool == true then
-        print("\nYou have the placeTorches setting on.\n")
-        print("Make sure " .. os.getComputerLabel() .. " has torches!!\n")
+        print("\nplaceTorches: ON\n")
+        print("!!! Make sure " .. os.getComputerLabel() .. " has torches !!!\n")
         print("To turn off, press 'n',")
         print("Otherwise press any other key...")
+    else
+        print("\nplaceTorches: OFF\n")
+        print("If you would like placeTorches ON,")
+        print("Make sure " .. os.getComputerLabel() .. " has torches!!\n")
+        print("And press 'y' to turn on")
 
-        while true do
-            local eventData = {os.pullEvent()}
-            local event = eventData[1]
+        print("Otherwise press any other key...")
+    end
 
-            if event == "key" then
-                os.pullEvent("char")
-                if eventData[2] == 78 then
-                    return false
-                else
-                    return true
-                end
+    while true do
+        local eventData = {os.pullEvent()}
+        local event = eventData[1]
+        local key = eventData[2]
+
+        if event == "key" then
+            os.pullEvent("char")
+            print(eventData[2])
+            if (bool == true and key == 78) or (bool == false and key == 89) then
+                return not bool
             end
+            return bool
         end
     end
-    return false
 end
 
 -- if not ... then
