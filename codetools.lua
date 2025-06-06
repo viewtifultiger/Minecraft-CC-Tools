@@ -47,7 +47,6 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
             local event = eventData[1]
 
             if event == "key" then
-                print(eventData[2])
                 os.pullEvent("char")
                 if eventData[2] == 78 then
                     return false

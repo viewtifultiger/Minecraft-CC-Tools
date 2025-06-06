@@ -7,9 +7,9 @@ local ct = codetools
 local placeTorches = ct.verifyTorchDownSetting(true)
 
 -- TO DO --
-
--- torch reminder if setting is on/ modularize torch check
 -- handle finding bedrock during first half
+-- mine extra when gravel falls from above
+-- make it continuously loop
 
 startingFuel, fuelCost = ct.hasFuelExpense()
 

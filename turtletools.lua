@@ -28,7 +28,7 @@ function torchDown()
 end
 
 function cleanInventory(overrides)
-	local discardList = dofile("discardlist_config.lua")
+	local discardList = dofile("block_discard_list_config.lua")
 	-- table: name, count
 	if overrides ~= nil then	
 		for key, value in pairs(overrides) do
@@ -43,7 +43,9 @@ function cleanInventory(overrides)
 			turtle.drop()
 		end
 	end
+	turtle.select(1)
 end
 
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
+end
