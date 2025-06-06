@@ -11,8 +11,8 @@ local ct = codetools
 
 function dig(fuel, placeTorches)
     local placeTorches = placeTorches or false
-    halfFuel = math.floor(fuel / 2)
-    depth = 0
+    local halfFuel = math.floor(fuel / 2)
+    local depth = 0
 
     turtle.digUp()
     turtle.digDown()
