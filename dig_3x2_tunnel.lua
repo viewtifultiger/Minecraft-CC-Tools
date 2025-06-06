@@ -19,6 +19,7 @@ elseif fuelCost % 2 == 0 then
 	fuelCost = ct.dec(fuelCost)
 end
 
+turtle.select(1)
 local depth = tunnel.dig(fuelCost, placeTorches)
 
 turtle.turnRight()
@@ -35,3 +36,4 @@ else
 end
 
 print("Fuel Remaining:", turtle.getFuelLevel())
+print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())

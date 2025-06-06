@@ -35,6 +35,8 @@ function hasFuelExpense()
     return startingFuel, fuelCost
 end
 
+-- TO DO -- 
+-- have Enter key also pass pullEvent
 function verifyTorchDownSetting(bool) --> bool : placeTorches
     if bool == true then
         print("\nYou have the placeTorches setting on.\n")
