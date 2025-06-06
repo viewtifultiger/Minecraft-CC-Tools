@@ -45,6 +45,5 @@ function cleanInventory(overrides)
 	end
 end
 
-if not ... then
-	torchDown()
-end
+if not pcall(debug.getlocal, 4, 1) then
+	print("Running turtletools.lua")

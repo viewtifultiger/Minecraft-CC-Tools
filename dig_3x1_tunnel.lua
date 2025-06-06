@@ -4,9 +4,7 @@ local tunnel = tunnel_3x1
 local ct = codetools
 
 -- settings
-local placeTorches = true
-
--- ct.verifyTorchDown(placeTorches)
+local placeTorches = ct.verifyTorchDownSetting(true)
 
 -- TO DO --
 

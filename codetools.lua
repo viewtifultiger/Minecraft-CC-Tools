@@ -40,7 +40,7 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
         print("\nYou have the placeTorches setting on.\n")
         print("Make sure " .. os.getComputerLabel() .. " has torches!!\n")
         print("To turn off, press 'n',")
-        print("Otherwise press any other key")
+        print("Otherwise press any other key...")
 
         while true do
             local eventData = {os.pullEvent()}
@@ -48,6 +48,7 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
 
             if event == "key" then
                 print(eventData[2])
+                os.pullEvent("char")
                 if eventData[2] == 78 then
                     return false
                 else
@@ -56,9 +57,13 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
             end
         end
     end
-    return
+    return false
 end
 
-if not ... then
-    verifyTorchDownSetting(true)
+-- if not ... then
+--     verifyTorchDownSetting(true)
+-- end
+
+if not pcall(debug.getlocal, 4, 1) then -- checks if stack has 4 levels
+    print("Running codetools.lua")
 end
