@@ -1,0 +1,39 @@
+os.loadAPI("tunnel_3x1.lua")
+os.loadAPI("codetools.lua")
+local tunnel = tunnel_3x1
+local ct = codetools
+
+-- settings
+local placeTorches = true
+
+-- ct.verifyTorchDown(placeTorches)
+
+-- TO DO --
+
+-- torch reminder if setting is on/ modularize torch check
+-- handle finding bedrock during first half
+
+startingFuel, fuelCost = ct.hasFuelExpense()
+
+if startingFuel == nil and fuelCost == nil then
+	return
+elseif fuelCost % 2 == 0 then
+	fuelCost = ct.dec(fuelCost)
+end
+
+local depth = tunnel.dig(fuelCost, placeTorches)
+
+turtle.turnRight()
+turtle.dig()
+turtle.forward() -- +1 fuel cost
+turtle.turnRight()
+
+local fuelCurrentlyExpended = startingFuel - turtle.getFuelLevel()
+
+if fuelCurrentlyExpended ~= (math.floor(fuelCost/2) + 1) then
+	tunnel.dig((fuelCurrentlyExpended-1) * 2)
+else
+	tunnel.dig(fuelCost)
+end
+
+print("Fuel Remaining:", turtle.getFuelLevel())
