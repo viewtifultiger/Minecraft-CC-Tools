@@ -52,6 +52,12 @@ function cleanInventory(overrides)
 	turtle.select(1)
 end
 
+function returnToSurface(depth)
+	for i=1,depth do
+		turtle.up()
+	end
+end
+
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
 end
