@@ -4,12 +4,16 @@ local tunnel = tunnel_3x1
 local ct = codetools
 
 -- settings
-local placeTorches = ct.verifyTorchDownSetting(true)
-
+local placeTorches = ct.verifyTorchDownSetting(false)
+if placeTorches then
+	print("\nplaceTorches: ON")
+else
+	print("\nplaceTorches: OFF")
+end
 -- TO DO --
-
--- torch reminder if setting is on/ modularize torch check
 -- handle finding bedrock during first half
+-- make it continuously loop
+-- place dig settings into a different file (rename files)
 
 startingFuel, fuelCost = ct.hasFuelExpense()
 
@@ -19,6 +23,7 @@ elseif fuelCost % 2 == 0 then
 	fuelCost = ct.dec(fuelCost)
 end
 
+turtle.select(1)
 local depth = tunnel.dig(fuelCost, placeTorches)
 
 turtle.turnRight()
@@ -34,4 +39,6 @@ else
 	tunnel.dig(fuelCost)
 end
 
+print("Complete!")
 print("Fuel Remaining:", turtle.getFuelLevel())
+print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())

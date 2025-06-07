@@ -11,25 +11,29 @@ local ct = codetools
 
 function dig(fuel, placeTorches)
     local placeTorches = placeTorches or false
-    halfFuel = math.floor(fuel / 2)
-    depth = 0
+    local halfFuel = math.floor(fuel / 2)
+    local depth = 0
 
     turtle.digUp()
     turtle.digDown()
     for moves = 1,halfFuel do
+        -- Torches
         if placeTorches and moves % 8 == 0 then
             placeTorches = tt.torchDown()
         end
+        -- Clean Inventory
         if moves % 16 == 0 then
             tt.cleanInventory()
         end
         block, tabl = turtle.inspect()
         if block == true then
-            if tabl.name ~= "minecraft:bedrock" or tabl.name ~= "minecraft:gravel" then
-                turtle.dig()
+            if tabl.name == "minecraft:gravel" then
+                repeat
+                    turtle.dig()
+                    _, tabl = turtle.inspect()
+                until tabl.name ~= "minecraft:gravel"
             else
-                print("oh look...", tabl.name)
-                break
+                turtle.dig()
             end
         end
         turtle.forward()
@@ -39,4 +43,3 @@ function dig(fuel, placeTorches)
     end
     return depth
 end
-

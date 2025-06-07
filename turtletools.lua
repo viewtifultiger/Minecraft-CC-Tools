@@ -1,4 +1,18 @@
+-- PRIVATE FUNCTIONS --
 
+-- direction: place - turtle place direction
+local function _placeTorch(place) --> bool : torch placed
+	selected = selectItem("torch")
+	if not selected then
+		return selected
+	end
+	place()
+	return selected
+end
+
+-- END OF PRIVATE FUNCTIONS --
+
+-- FUNCTIONS --
 function selectItem(item)
 	for slot=1,16 do
 		local selectedItem = turtle.getItemDetail(slot)
@@ -11,24 +25,16 @@ function selectItem(item)
 	return false
 end
 
+-- torch functions --> bool - if torch was avaiable and placed
+function torch()
+	return _placeTorch(turtle.place)
+function torchUp()
+	return _placeTorch(turtle.placeUp)
 function torchDown()
-	local selectedItem = turtle.getItemDetail()
-		local selected = true
-
-	if selectedItem == nil or selectedItem.name ~= "minecraft:torch" then
-		selected = selectItem("torch")
-	end
-	
-	if not selected then
-		return false
-	end
-	
-	turtle.placeDown()
-	return selected
-end
+	return _placeTorch(turtle.placeDown)
 
 function cleanInventory(overrides)
-	local discardList = dofile("discardlist_config.lua")
+	local discardList = dofile("_config_cleanInventory.lua")
 	-- table: name, count
 	if overrides ~= nil then	
 		for key, value in pairs(overrides) do
@@ -43,7 +49,15 @@ function cleanInventory(overrides)
 			turtle.drop()
 		end
 	end
+	turtle.select(1)
+end
+
+function returnToSurface(depth)
+	for i=1,depth do
+		turtle.up()
+	end
 end
 
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
+end
