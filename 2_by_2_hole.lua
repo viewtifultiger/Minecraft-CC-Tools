@@ -1,29 +1,59 @@
 os.loadAPI("codetools.lua")
+os.loadAPI("turtletools.lua")
 local ct = codetools
+local tt = turtletools
 
-local switch = true
+-- TO DO --
 
-local block, tabl = turtle.detectDown()
-if tabl.name ~= "minecraft:bedrock" then
-	turtle.digDown()
-	turtle.down()
+-- create dig_2x2_hole
+-- create a module for returning to surface
+-- ? check all digging blocks for bedrock (only check at bottom)
+-- ? find an algorithm to mine everthing around bedrock
+
+local block, tabl
+local turn = turtle.turnRight
+local opp_turn = turtle.turnLeft
+local depth = 0
+
+while true do
+	-- Clean Inventory
+	if depth % 12 == 0 then
+		tt.cleanInventory()
+	end
+
+	block, tabl = turtle.inspectDown()
+	if block then
+		if tabl.name ~= "minecraft:bedrock" then
+			turtle.digDown()
+			turtle.down()
+		else
+			break
+		end
+	else
+		turtle.down()
+	end
+	depth = ct.inc(depth)
+
+	block, tabl = turtle.inspect()
+	if tabl.name ~= "minecraft:bedrock" then
+		turtle.dig()
+		turn()
+		turtle.dig()
+		turtle.forward()
+		opp_turn()
+		turtle.dig()
+	else
+		break
+	end
+
+	temp = turn
+	turn = opp_turn
+	opp_turn = temp
 end
 
-_, tabl = turtle.detectDown()
+tt.returnToSurface(depth)
 
-while tabl.name ~= "minecraft:bedrock" do
-	turtle.dig()
-	turtle.turnRight()
-	turtle.dig()
-	turtle.forward()
-	turtle.turnLeft()
-	turtle.dig()
-	turtle.digDown()
-	turtle.down()
-	turtle.dig()
-	turtle.turnLeft()
-	turtle.dig()
-	turtle.forward()
-	turtle.turnRight() 
-	_, tabl = turtle.detectDown()
-end
+turn()
+turn()
+turtle.forward()
+turtle.forward()

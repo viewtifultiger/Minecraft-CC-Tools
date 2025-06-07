@@ -43,4 +43,3 @@ function dig(fuel, placeTorches)
     end
     return depth
 end
-
