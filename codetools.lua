@@ -21,6 +21,7 @@ function hasEnoughFuel(level)
     end
 end
 
+-- Check if current fuel is sufficient for user's desired expense
 function hasFuelExpense()
     local startingFuel = turtle.getFuelLevel()
 
@@ -67,10 +68,6 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
         end
     end
 end
-
--- if not ... then
---     verifyTorchDownSetting(true)
--- end
 
 if not pcall(debug.getlocal, 4, 1) then -- checks if stack has 4 levels
     print("Running codetools.lua")
