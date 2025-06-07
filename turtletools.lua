@@ -28,10 +28,13 @@ end
 -- torch functions --> bool - if torch was avaiable and placed
 function torch()
 	return _placeTorch(turtle.place)
+end
 function torchUp()
 	return _placeTorch(turtle.placeUp)
+end
 function torchDown()
 	return _placeTorch(turtle.placeDown)
+end
 
 function cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")
