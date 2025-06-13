@@ -13,6 +13,10 @@ end
 -- END OF PRIVATE FUNCTIONS --
 
 -- FUNCTIONS --
+function forward(int)
+	for i=1,int do turtle.forward() end
+end
+
 function selectItem(item)
 	for slot=1,16 do
 		local selectedItem = turtle.getItemDetail(slot)
