@@ -6,6 +6,8 @@ function dec(num)
     return num - 1
 end
 
+
+-- PROMPTS --
 function hasEnoughFuel(level)
     -- Fuel check
     local fuel = turtle.getFuelLevel()
@@ -21,13 +23,13 @@ function hasEnoughFuel(level)
     end
 end
 
+-- Check if current fuel is sufficient for user's desired expense
 function hasFuelExpense()
     local startingFuel = turtle.getFuelLevel()
-
     print("Fuel Level:", startingFuel)
     print("Enter fuel to expend: ")
-    local fuelCost = tonumber(io.read())
 
+    local fuelCost = tonumber(io.read())
     if fuelCost > startingFuel then
         print("Insufficient Fuel...")
         return nil, nil
@@ -37,8 +39,8 @@ end
 
 -- TO DO -- 
 -- have Enter key also pass pullEvent
-function verifyTorchDownSetting(bool) --> bool : placeTorches
-    if bool == true then
+function verifyTorchDownSetting(placeTorches) --> bool : placeTorches
+    if placeTorches == true then
         print("\nplaceTorches: ON\n")
         print("!!! Make sure " .. os.getComputerLabel() .. " has torches !!!\n")
         print("To turn off, press 'n',")
@@ -59,18 +61,21 @@ function verifyTorchDownSetting(bool) --> bool : placeTorches
 
         if event == "key" then
             os.pullEvent("char")
-            print(eventData[2])
-            if (bool == true and key == 78) or (bool == false and key == 89) then
-                return not bool
+            if (placeTorches == true and key == 78) or (placeTorches == false and key == 89) then
+                placeTorches = not placeTorches
             end
-            return bool
+            break
         end
     end
+
+    if placeTorches then
+        print("\nplaceTorches: ON")
+    else
+        print("\nplaceTorches: OFF")
+    end
+    return placeTorches
 end
 
--- if not ... then
---     verifyTorchDownSetting(true)
--- end
 
 if not pcall(debug.getlocal, 4, 1) then -- checks if stack has 4 levels
     print("Running codetools.lua")

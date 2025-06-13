@@ -13,6 +13,10 @@ end
 -- END OF PRIVATE FUNCTIONS --
 
 -- FUNCTIONS --
+function forward(int)
+	for i=1,int do turtle.forward() end
+end
+
 function selectItem(item)
 	for slot=1,16 do
 		local selectedItem = turtle.getItemDetail(slot)
@@ -28,10 +32,13 @@ end
 -- torch functions --> bool - if torch was avaiable and placed
 function torch()
 	return _placeTorch(turtle.place)
+end
 function torchUp()
 	return _placeTorch(turtle.placeUp)
+end
 function torchDown()
 	return _placeTorch(turtle.placeDown)
+end
 
 function cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")

@@ -13,9 +13,8 @@ end
 -- TO DO --
 -- handle finding bedrock during first half
 -- make it continuously loop
--- place dig settings into a different file (rename files)
 
-startingFuel, fuelCost = ct.hasFuelExpense()
+local startingFuel, fuelCost = ct.hasFuelExpense()
 
 if startingFuel == nil and fuelCost == nil then
 	return
