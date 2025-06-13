@@ -13,7 +13,6 @@ end
 -- TO DO --
 -- handle finding bedrock during first half
 -- make it continuously loop
--- place dig settings into a different file (rename files)
 
 local startingFuel, fuelCost = ct.hasFuelExpense()
 
