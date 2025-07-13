@@ -39,19 +39,20 @@ function dig(placeTorches) --> str: left or right
 		end
 		depth = ct.inc(depth)
 
-		block, tabl = turtle.inspect()
-		if tabl.name ~= "minecraft:bedrock" then
-			turtle.dig()
-			turn()
-			turtle.dig()
-			turtle.forward()
-			side_moves = ct.inc(side_moves)
-			opp_turn()
-			turtle.dig()
-		else
+
+		if not tt.compareAndDig("minecraft:bedrock") then
 			break
 		end
-
+		turn()
+		if not tt.compareAndDig("minecraft:bedrock") then
+			break
+		end
+		turtle.forward()
+		side_moves = ct.inc(side_moves)
+		opp_turn()
+		if not tt.compareAndDig("minecraft:bedrock") then
+			break
+		end
 		temp = turn
 		turn = opp_turn
 		opp_turn = temp

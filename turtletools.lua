@@ -29,7 +29,19 @@ function selectItem(item)
 	return false
 end
 
--- torch functions --> bool - if torch was avaiable and placed
+-- DIG FUNCTIONS --
+function compareAndDig(blockAvoiding)
+	success, data = turtle.inspect()
+	if success and data.name ~= blockAvoiding then
+		turtle.dig()
+		return true
+	else
+		return false
+	end
+end
+
+
+-- TORCH FUNCTIONS --> bool - if torch was avaiable and placed
 function torch()
 	return _placeTorch(turtle.place)
 end
@@ -39,6 +51,8 @@ end
 function torchDown()
 	return _placeTorch(turtle.placeDown)
 end
+
+
 
 function cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")
@@ -68,3 +82,4 @@ end
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
 end
+

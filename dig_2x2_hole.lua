@@ -29,7 +29,7 @@ end
 local placeTorches = ct.verifyTorchDownSetting(false)
 
 -- TO DO --
--- check for bedrock before every dig
+-- make sure digging only stops once bedrock is found
 -- create a prompt to choose starting left or right
 -- make this continuous
 -- find a way to determine position once bedrock is found
@@ -46,6 +46,9 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 -- 	end
 -- end
 
+-- Looping the number of 2x2 holes to dig
+-- sets up for next hole depending on position
+-- after returning to the surface
 for i=1,iterations do
 	local placement = hole.dig(placeTorches)
 	turtle.turnRight()
