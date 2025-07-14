@@ -32,7 +32,7 @@ end
 -- DIG FUNCTIONS --
 function compareAndDig(blockAvoiding)
 	success, data = turtle.inspect()
-	if success and data.name ~= blockAvoiding then
+	if data.name ~= blockAvoiding then
 		turtle.dig()
 		return true
 	else
