@@ -29,11 +29,10 @@ end
 local placeTorches = ct.verifyTorchDownSetting(false)
 
 -- TO DO --
--- make sure digging only stops once bedrock is found
+-- investigate extra turn made after last iteration is made
 -- create a prompt to choose starting left or right
--- make this continuous
--- find a way to determine position once bedrock is found
 -- ? create a prompt to get y level to know how much fuel is to be expended
+-- investigate why placeTorches is not working
 
 -- if iterations == 1 then
 -- 	hole.dig(placeTorches)

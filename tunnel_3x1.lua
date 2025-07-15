@@ -8,6 +8,8 @@ local ct = codetools
 -- fix handling of bedrock
 -- dig setting for placing torches
 -- dig setting for clearing inventory
+-- turtle sometimes does not come back all the way (missing 2 more blocks)
+   -- after observations, gravel was present in the tunnel
 
 function dig(fuel, placeTorches)
     local placeTorches = placeTorches or false
@@ -30,6 +32,7 @@ function dig(fuel, placeTorches)
             if tabl.name == "minecraft:gravel" then
                 repeat
                     turtle.dig()
+                    sleep(1)
                     _, tabl = turtle.inspect()
                 until tabl.name ~= "minecraft:gravel"
             else
