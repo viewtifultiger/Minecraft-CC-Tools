@@ -45,6 +45,7 @@ function dig(placeTorches) --> str: left or right
 		end
 		turn()
 		if not tt.compareAndDig("minecraft:bedrock") then
+			opp_turn()
 			break
 		end
 		turtle.forward()
