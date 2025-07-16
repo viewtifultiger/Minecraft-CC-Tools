@@ -29,7 +29,7 @@ function dig(depth, placeTorches)
             if tabl.name == "minecraft:gravel" then
                 repeat
                     turtle.dig()
-                    sleep(2)
+                    sleep(3)
                     _, tabl = turtle.inspect()
                 until tabl.name ~= "minecraft:gravel"
             else

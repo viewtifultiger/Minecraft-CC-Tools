@@ -33,6 +33,7 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 -- create a prompt to choose starting left or right
 -- ? create a prompt to get y level to know how much fuel is to be expended
 -- investigate why placeTorches is not working
+-- print fuel level before starting program
 
 -- if iterations == 1 then
 -- 	hole.dig(placeTorches)

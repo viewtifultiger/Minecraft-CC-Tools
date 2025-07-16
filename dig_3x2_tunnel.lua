@@ -13,6 +13,7 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 -- make hasFuelExpense() return a bool
 -- separate asking fuel cost from fuel comparison from hasFuelExpense()
 -- change fuel expense prompt to dig depth
+-- find a way to dig tunnel going left rather than to the right
 
 local startingFuel = turtle.getFuelLevel()
 print("Fuel Level:", startingFuel)
