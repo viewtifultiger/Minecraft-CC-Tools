@@ -20,25 +20,38 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 	-- separating the stacks. However, previous observations showed duplicated
 	-- incomplete stacks found elsewhere other than slot 1. 
 
+-- NOTES --
+-- Thinking of reworking the tunnel_3x1 loop to generalize 3 by X 
+	-- tunnel sizes
+
 local startingFuel = turtle.getFuelLevel()
 print("Fuel Level:", startingFuel)
-print("Enter distance: ")
+print("Enter Distance: ")
+print("Enter number of iterations: ")
+local iterations = tonumber(io.read())
 local distance = tonumber(io.read())
-local fuelCost = (distance * 2) + 1
+-- + 2 accounts for 2 extra movements made to repeat tunnels (separated for readability)
+local fuelCost = ((distance * 2) + 2) * iterations
 
-if not ct.hasFuelExpense(fuelCost) then
-	error("Cannot run dig_3x2_tunnel because there is not enough fuel")
-end
+for i=1, iterations do
+	if not ct.hasFuelExpense(fuelCost) then
+		error("Cannot run dig_3x2_tunnel because there is not enough fuel")
+	end
 
-turtle.select(1)
-tunnel.dig(distance, placeTorches)
+	turtle.select(1)
+	tunnel.dig(distance, placeTorches)
 
-turtle.turnRight()
-turtle.dig()
-turtle.forward() -- +1 fuel cost
-turtle.turnRight()
+	turtle.turnRight()
+	turtle.dig()
+	turtle.forward() -- +1 fuel cost
+	turtle.turnRight()
 
-tunnel.dig(distance)
+	tunnel.dig(distance)
+
+	turtle.turnLeft()
+	turtle.dig()
+	turtle.forward()
+	turtle.turnLeft()
 
 print("Complete!")
 print("Fuel Remaining:", turtle.getFuelLevel())
