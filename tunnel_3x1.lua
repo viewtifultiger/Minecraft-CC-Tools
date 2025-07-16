@@ -6,19 +6,15 @@ local ct = codetools
 -- TO DO --
 
 -- fix handling of bedrock
--- dig setting for placing torches
--- dig setting for clearing inventory
--- turtle sometimes does not come back all the way (missing 2 more blocks)
-   -- after observations, gravel was present in the tunnel
+-- test to see if turtle always come back to starting position
 
-function dig(fuel, placeTorches)
+function dig(depth, placeTorches)
     local placeTorches = placeTorches or false
-    local halfFuel = math.floor(fuel / 2)
-    local depth = 0
+    local currentDepth = 0
 
     turtle.digUp()
     turtle.digDown()
-    for moves = 1,halfFuel do
+    for moves = 1, depth do
         -- Torches
         if placeTorches and moves % 8 == 0 then
             placeTorches = tt.torchDown()
@@ -28,6 +24,7 @@ function dig(fuel, placeTorches)
             tt.cleanInventory()
         end
         block, tabl = turtle.inspect()
+        -- Stop to mine gravel
         if block == true then
             if tabl.name == "minecraft:gravel" then
                 repeat
@@ -42,7 +39,8 @@ function dig(fuel, placeTorches)
         turtle.forward()
         turtle.digUp()
         turtle.digDown()
-        depth = ct.inc(depth)
+        currentDepth = ct.inc(currentDepth)
     end
-    return depth
+    return currentDepth -- might need this when an invalid block
+                            -- is found (bedrock or other)
 end

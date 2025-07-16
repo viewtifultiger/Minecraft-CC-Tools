@@ -5,38 +5,33 @@ local ct = codetools
 
 -- settings
 local placeTorches = ct.verifyTorchDownSetting(false)
-if placeTorches then
-	print("\nplaceTorches: ON")
-else
-	print("\nplaceTorches: OFF")
-end
+
 -- TO DO --
 -- handle finding bedrock during first half
 -- make it continuously loop
+-- make code more efficient
+-- make hasFuelExpense() return a bool
+-- separate asking fuel cost from fuel comparison from hasFuelExpense()
+-- change fuel expense prompt to dig depth
 
-local startingFuel, fuelCost = ct.hasFuelExpense()
+local startingFuel = turtle.getFuelLevel()
+print("Fuel Level:", startingFuel)
+print("Enter Depth: ")
+local depth = tonumber(io.read())
+local fuelCost = (depth * 2) + 1
 
-if startingFuel == nil and fuelCost == nil then
-	return
-elseif fuelCost % 2 == 0 then
-	fuelCost = ct.dec(fuelCost)
-end
+if not ct.hasFuelExpense(fuelCost) then
+	error("Cannot run dig_3x2_tunnel because there is not enough fuel")
 
 turtle.select(1)
-local depth = tunnel.dig(fuelCost, placeTorches)
+tunnel.dig(depth, placeTorches)
 
 turtle.turnRight()
 turtle.dig()
 turtle.forward() -- +1 fuel cost
 turtle.turnRight()
 
-local fuelCurrentlyExpended = startingFuel - turtle.getFuelLevel()
-
-if fuelCurrentlyExpended ~= (math.floor(fuelCost/2) + 1) then
-	tunnel.dig((fuelCurrentlyExpended-1) * 2)
-else
-	tunnel.dig(fuelCost)
-end
+tunnel.dig(depth)
 
 print("Complete!")
 print("Fuel Remaining:", turtle.getFuelLevel())

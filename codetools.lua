@@ -24,17 +24,11 @@ function hasEnoughFuel(level)
 end
 
 -- Check if current fuel is sufficient for user's desired expense
-function hasFuelExpense()
-    local startingFuel = turtle.getFuelLevel()
-    print("Fuel Level:", startingFuel)
-    print("Enter fuel to expend: ")
-
-    local fuelCost = tonumber(io.read())
-    if fuelCost > startingFuel then
-        print("Insufficient Fuel...")
-        return nil, nil
+function hasFuelExpense(fuelCost)
+    if fuelCost > turtle.getFuelLevel() then
+        return false
     end
-    return startingFuel, fuelCost
+    return true
 end
 
 -- TO DO -- 
