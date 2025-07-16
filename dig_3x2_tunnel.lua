@@ -22,6 +22,7 @@ local fuelCost = (depth * 2) + 1
 
 if not ct.hasFuelExpense(fuelCost) then
 	error("Cannot run dig_3x2_tunnel because there is not enough fuel")
+end
 
 turtle.select(1)
 tunnel.dig(depth, placeTorches)
