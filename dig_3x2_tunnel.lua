@@ -27,9 +27,9 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 local startingFuel = turtle.getFuelLevel()
 print("Fuel Level:", startingFuel)
 print("Enter Distance: ")
+local distance = tonumber(io.read())
 print("Enter number of iterations: ")
 local iterations = tonumber(io.read())
-local distance = tonumber(io.read())
 -- + 2 accounts for 2 extra movements made to repeat tunnels (separated for readability)
 local fuelCost = ((distance * 2) + 2) * iterations
 
@@ -52,6 +52,7 @@ for i=1, iterations do
 	turtle.dig()
 	turtle.forward()
 	turtle.turnLeft()
+end
 
 print("Complete!")
 print("Fuel Remaining:", turtle.getFuelLevel())
