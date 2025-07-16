@@ -12,17 +12,14 @@ local ct = codetools
 -- NOTES --
 -- removed sleep function to test if gravel falling from above non
     -- gravel block that was mined in front is the real problem.
--- turtle might not being going to full depth when a non-gravel
-    -- block is broken but there is a gravel above that blocks it from
-    -- moving forward properly, hence skipping a depth.
 
-function dig(depth, placeTorches)
+function dig(distance, placeTorches)
     local placeTorches = placeTorches or false
     local currentDepth = 0
 
     turtle.digUp()
     turtle.digDown()
-    for moves = 1, depth do
+    for moves = 1, distance do
         -- Torches
         if placeTorches and moves % 8 == 0 then
             placeTorches = tt.torchDown()
