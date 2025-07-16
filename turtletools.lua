@@ -70,7 +70,15 @@ function cleanInventory(overrides)
 			turtle.drop()
 		end
 	end
-	turtle.select(1)
+	for slot=1, 16 do
+		local item = turtle.getItemDetail(slot)
+		if item ~= nil then
+			turtle.select(slot)
+			break
+		else
+			turtle.select(1)
+		end
+	end
 end
 
 function returnToSurface(depth)

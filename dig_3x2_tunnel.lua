@@ -14,6 +14,11 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 -- separate asking fuel cost from fuel comparison from hasFuelExpense()
 -- change fuel expense prompt to dig depth
 -- find a way to dig tunnel going left rather than to the right
+-- investigate two incomplete stacks found in 2 different slots
+	-- after cobble was in slot 1 and it was discarded, coal was mined,
+	-- which was previously sloted elsewhere, was stashed in slot 1, therefore
+	-- separating the stacks. However, previous observations showed duplicated
+	-- incomplete stacks found elsewhere other than slot 1. 
 
 local startingFuel = turtle.getFuelLevel()
 print("Fuel Level:", startingFuel)
