@@ -7,6 +7,14 @@ local ct = codetools
 
 -- fix handling of bedrock
 -- test to see if turtle always come back to starting position
+-- check for sand/gravel after digging the block in front
+
+-- NOTES --
+-- removed sleep function to test if gravel falling from above non
+    -- gravel block that was mined in front is the real problem.
+-- turtle might not being going to full depth when a non-gravel
+    -- block is broken but there is a gravel above that blocks it from
+    -- moving forward properly, hence skipping a depth.
 
 function dig(depth, placeTorches)
     local placeTorches = placeTorches or false
@@ -23,19 +31,15 @@ function dig(depth, placeTorches)
         if moves % 16 == 0 then
             tt.cleanInventory()
         end
+
         block, tabl = turtle.inspect()
-        -- Stop to mine gravel
-        if block == true then
-            if tabl.name == "minecraft:gravel" then
-                repeat
-                    turtle.dig()
-                    sleep(3)
-                    _, tabl = turtle.inspect()
-                until tabl.name ~= "minecraft:gravel"
-            else
-                turtle.dig()
-            end
+        -- keeps mining until no block is inspected
+            -- (prevents falling blocks from preventing movement)
+        while block == true do
+            turtle.dig()
+            block, data = turtle.inspect()
         end
+
         turtle.forward()
         turtle.digUp()
         turtle.digDown()
