@@ -15,6 +15,7 @@ function M.dig(direction, placeTorches) --> str: left or right
 	else
 		local turn = turtle.turnLeft
 		local opp_turn = turtle.turnRight
+	end
 	local depth = 0
 	local side_moves = 0
 
