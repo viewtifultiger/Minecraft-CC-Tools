@@ -5,6 +5,7 @@ local hole = hole_2x2
 local ct = codetools
 local tt = turtletools
 
+print("Fuel Level: ", turtle.getFuelLevel())
 print("Enter your Y level: ")
 local y = tonumber(io.read())
 print("Enter number of iterations: ")
@@ -29,10 +30,7 @@ end
 local placeTorches = ct.verifyTorchDownSetting(false)
 
 -- TO DO --
--- investigate extra turn made after last iteration is made
 -- create a prompt to choose starting left or right
--- ? create a prompt to get y level to know how much fuel is to be expended
--- investigate why placeTorches is not working
 -- print fuel level before starting program
 
 -- if iterations == 1 then

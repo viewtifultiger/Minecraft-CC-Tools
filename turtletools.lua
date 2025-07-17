@@ -111,10 +111,6 @@ function M.returnToSurface(depth)
 	end
 end
 
-function M.testFunc()
-	print("Test Func works")
-end
-
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
 end

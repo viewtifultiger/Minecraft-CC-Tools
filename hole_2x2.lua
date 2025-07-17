@@ -6,10 +6,15 @@ local tt = turtletools
 -- TO DO --
 -- make code more efficient
 -- ? find an algorithm to mine everthing around bedrock
-function dig(placeTorches) --> str: left or right
+function dig(direction, placeTorches) --> str: left or right
 	local block, tabl
-	local turn = turtle.turnRight
-	local opp_turn = turtle.turnLeft
+
+	if direction == "right" then
+		local turn = turtle.turnRight
+		local opp_turn = turtle.turnLeft
+	else
+		local turn = turtle.turnLeft
+		local opp_turn = turtle.turnRight
 	local depth = 0
 	local side_moves = 0
 
