@@ -4,7 +4,7 @@ local M = {}
 
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
-	selected = selectItem("torch")
+	local selected = M.selectItem("torch")
 	if not selected then
 		return selected
 	end
@@ -37,14 +37,15 @@ end
 -- TO DO --
 -- make sure dig() can handle bedrock
 function M.dig()
-	block, tabl = turtle.inspect()
-    while block == true do
+	local dontDig = dofile("_config_dontDigSettings.lua")
+	local block, data = turtle.inspect()
+    while block == true and not dontDig[data.name] do
         turtle.dig()
         block, data = turtle.inspect()
     end	
 end
 function M.compareAndDig(blockAvoiding)
-	_, data = turtle.inspect()
+	local _, data = turtle.inspect()
 	if data.name ~= blockAvoiding then
 		turtle.dig()
 		return true
@@ -56,7 +57,7 @@ function M.digUTurnRight()
 	turtle.turnRight()
 	turtle.dig()
 	turtle.forward()
-	turtle.turtRight()
+	turtle.turnRight()
 end
 function M.digUTurnLeft()
 	turtle.turnLeft()

@@ -1,6 +1,7 @@
-local ct = require("codetools.lua")
-local tt = require("turtletools.lua")
+local ct = require("codetools")
+local tt = require("turtletools")
 
+local M = {}
 -- TO DO --
 
 -- fix handling of bedrock
@@ -11,7 +12,7 @@ local tt = require("turtletools.lua")
 -- removed sleep function to test if gravel falling from above non
     -- gravel block that was mined in front is the real problem.
 
-function dig(distance, placeTorches)
+function M.dig(distance, placeTorches)
     local placeTorches = placeTorches or false
     local currentDepth = 0
 
@@ -37,3 +38,5 @@ function dig(distance, placeTorches)
     return currentDepth -- might need this when an invalid block
                             -- is found (bedrock or other)
 end
+
+return M

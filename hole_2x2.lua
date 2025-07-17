@@ -1,10 +1,12 @@
 local ct = require("codetools.lua")
 local tt = require("turtletools.lua")
 
+local M = {}
+
 -- TO DO --
 -- make code more efficient
 -- ? find an algorithm to mine everthing around bedrock
-function dig(direction, placeTorches) --> str: left or right
+function M.dig(direction, placeTorches) --> str: left or right
 	local block, tabl
 
 	if direction == "right" then
@@ -68,3 +70,5 @@ function dig(direction, placeTorches) --> str: left or right
 		return "right"
 	end
 end
+
+return M
