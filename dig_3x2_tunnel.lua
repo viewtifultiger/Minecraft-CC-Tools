@@ -52,6 +52,7 @@ for i=1, iterations do
 	turtle.dig()
 	turtle.forward()
 	turtle.turnLeft()
+	placeTorches = false
 end
 
 print("Complete!")
