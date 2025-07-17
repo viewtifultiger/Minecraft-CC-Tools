@@ -1,3 +1,5 @@
+local M = {}
+
 -- PRIVATE FUNCTIONS --
 
 -- direction: place - turtle place direction
@@ -13,11 +15,11 @@ end
 -- END OF PRIVATE FUNCTIONS --
 
 -- FUNCTIONS --
-function forward(int)
+function M.forward(int)
 	for i=1,int do turtle.forward() end
 end
 
-function selectItem(item)
+function M.selectItem(item)
 	for slot=1,16 do
 		local selectedItem = turtle.getItemDetail(slot)
 
@@ -34,14 +36,14 @@ end
 
 -- TO DO --
 -- make sure dig() can handle bedrock
-function dig()
+function M.dig()
 	block, tabl = turtle.inspect()
     while block == true do
         turtle.dig()
         block, data = turtle.inspect()
     end	
 end
-function compareAndDig(blockAvoiding)
+function M.compareAndDig(blockAvoiding)
 	_, data = turtle.inspect()
 	if data.name ~= blockAvoiding then
 		turtle.dig()
@@ -50,13 +52,13 @@ function compareAndDig(blockAvoiding)
 		return false
 	end
 end
-function digUTurnRight()
+function M.digUTurnRight()
 	turtle.turnRight()
 	turtle.dig()
 	turtle.forward()
 	turtle.turtRight()
 end
-function digUTurnLeft()
+function M.digUTurnLeft()
 	turtle.turnLeft()
 	turtle.dig()
 	turtle.forward()
@@ -64,19 +66,19 @@ function digUTurnLeft()
 end
 
 -- TORCH FUNCTIONS --> bool - if torch was avaiable and placed
-function torch()
+function M.torch()
 	return _placeTorch(turtle.place)
 end
-function torchUp()
+function M.torchUp()
 	return _placeTorch(turtle.placeUp)
 end
-function torchDown()
+function M.torchDown()
 	return _placeTorch(turtle.placeDown)
 end
 
 
 
-function cleanInventory(overrides)
+function M.cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")
 	-- table: name, count
 	if overrides ~= nil then	
@@ -103,13 +105,18 @@ function cleanInventory(overrides)
 	end
 end
 
-function returnToSurface(depth)
+function M.returnToSurface(depth)
 	for i=1,depth do
 		turtle.up()
 	end
+end
+
+function M.testFunc()
+	print("Test Func works")
 end
 
 if not pcall(debug.getlocal, 4, 1) then
 	print("Running turtletools.lua")
 end
 
+return M
