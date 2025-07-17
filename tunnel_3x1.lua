@@ -29,13 +29,7 @@ function dig(distance, placeTorches)
             tt.cleanInventory()
         end
 
-        block, tabl = turtle.inspect()
-        -- keeps mining until no block is inspected
-            -- (prevents falling blocks from preventing movement)
-        while block == true do
-            turtle.dig()
-            block, data = turtle.inspect()
-        end
+        tt.dig()
 
         turtle.forward()
         turtle.digUp()

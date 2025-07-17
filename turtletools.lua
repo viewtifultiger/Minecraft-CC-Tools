@@ -29,9 +29,20 @@ function selectItem(item)
 	return false
 end
 
+
 -- DIG FUNCTIONS --
+
+-- TO DO --
+-- make sure dig() can handle bedrock
+function dig()
+	block, tabl = turtle.inspect()
+    while block == true do
+        turtle.dig()
+        block, data = turtle.inspect()
+    end	
+end
 function compareAndDig(blockAvoiding)
-	success, data = turtle.inspect()
+	_, data = turtle.inspect()
 	if data.name ~= blockAvoiding then
 		turtle.dig()
 		return true
@@ -39,7 +50,18 @@ function compareAndDig(blockAvoiding)
 		return false
 	end
 end
-
+function digUTurnRight()
+	turtle.turnRight()
+	turtle.dig()
+	turtle.forward()
+	turtle.turtRight()
+end
+function digUTurnLeft()
+	turtle.turnLeft()
+	turtle.dig()
+	turtle.forward()
+	turtle.turnLeft()
+end
 
 -- TORCH FUNCTIONS --> bool - if torch was avaiable and placed
 function torch()
