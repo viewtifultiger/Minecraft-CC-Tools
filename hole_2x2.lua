@@ -1,5 +1,5 @@
-local ct = require("codetools.lua")
-local tt = require("turtletools.lua")
+local ct = require("codetools")
+local tt = require("turtletools")
 
 local M = {}
 

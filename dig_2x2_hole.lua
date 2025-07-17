@@ -1,6 +1,6 @@
-local hole = require("hole_2x2.lua")
-local ct = require("codetools.lua")
-local tt = require("turtletools.lua")
+local hole = require("hole_2x2")
+local ct = require("codetools")
+local tt = require("turtletools")
 
 print("Fuel Level: ", turtle.getFuelLevel())
 print("Enter your Y level: ")
