@@ -4,9 +4,7 @@ local ct = codetools
 local tt = turtletools
 
 -- TO DO --
-
--- create dig_2x2_hole
--- ? check all digging blocks for bedrock (only check at bottom)
+-- make code more efficient
 -- ? find an algorithm to mine everthing around bedrock
 function dig(placeTorches) --> str: left or right
 	local block, tabl

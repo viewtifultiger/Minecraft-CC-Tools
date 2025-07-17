@@ -57,11 +57,12 @@ for i=1,iterations do
 	else
 		tt.forward(1)
 	end
-	turtle.turnLeft()
+	if i ~= iterations then
+		turtle.turnLeft()
+	end
 end
 
-turtle.turnLeft()
-turtle.turnLeft()
+turtle.turnRight()
 tt.forward(3)
 
 local fuelCurrentlyExpended = startingFuel - turtle.getFuelLevel()
