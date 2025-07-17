@@ -1,7 +1,5 @@
-os.loadAPI("codetools.lua")
-os.loadAPI("turtletools.lua")
-local ct = codetools
-local tt = turtletools
+local ct = require("codetools.lua")
+local tt = require("turtletools.lua")
 
 -- TO DO --
 -- make code more efficient

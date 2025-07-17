@@ -1,14 +1,16 @@
-function inc(num)
+local M = {}
+
+function M.inc(num)
     return num + 1
 end
 
-function dec(num)
+function M.dec(num)
     return num - 1
 end
 
 
 -- PROMPTS --
-function hasEnoughFuel(level)
+function M.hasEnoughFuel(level)
     -- Fuel check
     local fuel = turtle.getFuelLevel()
     if fuel < level then
@@ -24,7 +26,7 @@ function hasEnoughFuel(level)
 end
 
 -- Check if current fuel is sufficient for user's desired expense
-function hasFuelExpense(fuelCost)
+function M.hasFuelExpense(fuelCost)
     if fuelCost > turtle.getFuelLevel() then
         return false
     end
@@ -33,7 +35,7 @@ end
 
 -- TO DO -- 
 -- have Enter key also pass pullEvent
-function verifyTorchDownSetting(placeTorches) --> bool : placeTorches
+function M.verifyTorchDownSetting(placeTorches) --> bool : placeTorches
     if placeTorches == true then
         print("\nplaceTorches: ON\n")
         print("!!! Make sure " .. os.getComputerLabel() .. " has torches !!!\n")
@@ -74,3 +76,5 @@ end
 if not pcall(debug.getlocal, 4, 1) then -- checks if stack has 4 levels
     print("Running codetools.lua")
 end
+
+return M

@@ -1,9 +1,7 @@
 os.loadAPI("tunnel_3x1.lua")
-os.loadAPI("codetools.lua")
-os.loadAPI("turtletools.lua")
+local ct = require("codetools.lua")
+local tt = require("turtletools.lua")
 local tunnel = tunnel_3x1
-local ct = codetools
-local tt = turtletools
 
 -- settings
 local placeTorches = ct.verifyTorchDownSetting(false)

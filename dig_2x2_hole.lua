@@ -1,9 +1,7 @@
 os.loadAPI("hole_2x2.lua")
-os.loadAPI("codetools.lua")
-os.loadAPI("turtletools.lua")
+local ct = require("codetools.lua")
+local tt = require("turtletools.lua")
 local hole = hole_2x2
-local ct = codetools
-local tt = turtletools
 
 print("Fuel Level: ", turtle.getFuelLevel())
 print("Enter your Y level: ")

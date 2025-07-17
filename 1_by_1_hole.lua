@@ -1,5 +1,4 @@
-os.loadAPI("codetools.lua")
-local ct = codetools
+local ct = require("codetools.lua")
 
 -- Fuel check
 if ct.hasEnoughFuel(600) == false then
