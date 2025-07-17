@@ -45,7 +45,7 @@ local placeTorches = ct.verifyTorchDownSetting(false)
 -- sets up for next hole depending on position
 -- after returning to the surface
 for i=1,iterations do
-	local placement = hole.dig(placeTorches)
+	local placement = hole.dig("right", placeTorches)
 	turtle.turnRight()
 	if placement == "left" then
 		tt.forward(2)

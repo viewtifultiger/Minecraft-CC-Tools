@@ -8,13 +8,15 @@ local M = {}
 -- ? find an algorithm to mine everthing around bedrock
 function M.dig(direction, placeTorches) --> str: left or right
 	local block, tabl
+	local turn, opp_turn
 
-	if direction == "right" then
-		local turn = turtle.turnRight
-		local opp_turn = turtle.turnLeft
+	if direction == "left" then
+		turn = turtle.turnLeft
+		opp_turn = turtle.turnRight
+
 	else
-		local turn = turtle.turnLeft
-		local opp_turn = turtle.turnRight
+		turn = turtle.turnRight
+		opp_turn = turtle.turnLeft
 	end
 	local depth = 0
 	local side_moves = 0
