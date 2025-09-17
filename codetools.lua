@@ -1,3 +1,10 @@
+--[[
+TO DO:
+
+- verifyTorchSettings
+    * have Enter key also pass pullEvent
+]]
+
 local M = {}
 
 function M.inc(num)
@@ -33,8 +40,6 @@ function M.hasFuelExpense(fuelCost)
     return true
 end
 
--- TO DO -- 
--- have Enter key also pass pullEvent
 function M.verifyTorchDownSetting(placeTorches) --> bool : placeTorches
     if placeTorches == true then
         print("\nplaceTorches: ON\n")
@@ -50,18 +55,15 @@ function M.verifyTorchDownSetting(placeTorches) --> bool : placeTorches
         print("Otherwise press any other key...")
     end
 
+    local scrap_event = {os.pullEvent("key_up")} -- enter key_up after running program
     while true do
-        local eventData = {os.pullEvent()}
-        local event = eventData[1]
+        local eventData = {os.pullEvent("key_up")}
         local key = eventData[2]
 
-        if event == "key" then
-            os.pullEvent("char")
-            if (placeTorches == true and key == 78) or (placeTorches == false and key == 89) then
+        if (placeTorches == true and key == 78) or (placeTorches == false and key == 89) then
                 placeTorches = not placeTorches
-            end
-            break
         end
+        break
     end
 
     if placeTorches then
