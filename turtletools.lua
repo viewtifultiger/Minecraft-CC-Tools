@@ -57,20 +57,22 @@ function M.compareAndDig(blockAvoiding)
 end
 function M.digUTurnRight()
 	turtle.turnRight()
-	if not isInFront("bedrock") then
+	if not M.isInFront("bedrock") then
 		turtle.dig()
 		turtle.forward()
 		turtle.turnRight()
 		return true
+	end
 	return false
 end
 function M.digUTurnLeft()
 	turtle.turnLeft()
-	if not isInFront("bedrock") then
+	if not M.isInFront("bedrock") then
 		turtle.dig()
 		turtle.forward()
 		turtle.turnLeft()
 		return true
+	end
 	return false
 end
 
@@ -90,10 +92,10 @@ end
 --  - Allow isInFront() to accept a table
 
 
-function M.isInFront(block)
+function M.isInFront(block_name)
 	block, tabl = turtle.inspect()
 	if block then
-		if tabl.name == ("minecraft:" .. block) then
+		if tabl.name == ("minecraft:" .. block_name) then
 			return true
 		end
 	end
