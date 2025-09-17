@@ -36,13 +36,15 @@ end
 
 -- TO DO --
 -- make sure dig() can handle bedrock
-function M.dig()
+function M.dig(distance)
 	local dontDig = dofile("_config_dontDigSettings.lua")
 	local block, data = turtle.inspect()
-    while block == true and not dontDig[data.name] do
-        turtle.dig()
-        block, data = turtle.inspect()
-    end	
+	for i =1, distance do
+	    if block == true and not dontDig[data.name] then
+	        turtle.dig()
+	        block, data = turtle.inspect()
+	    end
+	end
 end
 function M.compareAndDig(blockAvoiding)
 	local _, data = turtle.inspect()
@@ -55,15 +57,21 @@ function M.compareAndDig(blockAvoiding)
 end
 function M.digUTurnRight()
 	turtle.turnRight()
-	turtle.dig()
-	turtle.forward()
-	turtle.turnRight()
+	if not isInFront("bedrock") then
+		turtle.dig()
+		turtle.forward()
+		turtle.turnRight()
+		return true
+	return false
 end
 function M.digUTurnLeft()
 	turtle.turnLeft()
-	turtle.dig()
-	turtle.forward()
-	turtle.turnLeft()
+	if not isInFront("bedrock") then
+		turtle.dig()
+		turtle.forward()
+		turtle.turnLeft()
+		return true
+	return false
 end
 
 -- TORCH FUNCTIONS --> bool - if torch was avaiable and placed
@@ -77,7 +85,20 @@ function M.torchDown()
 	return _placeTorch(turtle.placeDown)
 end
 
+-- Check Functions
+-- TO DO:
+--  - Allow isInFront() to accept a table
 
+
+function M.isInFront(block)
+	block, tabl = turtle.inspect()
+	if block then
+		if tabl.name == ("minecraft:" .. block) then
+			return true
+		end
+	end
+	return false
+end
 
 function M.cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")
@@ -87,7 +108,6 @@ function M.cleanInventory(overrides)
 			discardList[key] = value
 		end
 	end
-
 	for slot=1,16 do
 		local item = turtle.getItemDetail(slot)
 		if item ~= nil and discardList[item.name] then

@@ -28,7 +28,7 @@ function M.dig(distance, placeTorches)
             tt.cleanInventory()
         end
 
-        tt.dig()
+        tt.dig(distance)
 
         turtle.forward()
         turtle.digUp()
