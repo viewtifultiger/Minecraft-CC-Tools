@@ -1,3 +1,7 @@
+--[[
+- Allow isInFront() to accept a table
+]]
+
 local M = {}
 
 -- PRIVATE FUNCTIONS --
@@ -18,7 +22,12 @@ end
 function M.forward(int)
 	for i=1,int do turtle.forward() end
 end
-
+function M.back(int)
+	for i=1,int do turtle.back() end
+end
+function M.turn180()
+	for i=1,2 do turtle.turnLeft() end
+end
 function M.selectItem(item)
 	for slot=1,16 do
 		local selectedItem = turtle.getItemDetail(slot)
@@ -89,7 +98,7 @@ end
 
 -- Check Functions
 -- TO DO:
---  - Allow isInFront() to accept a table
+--  
 
 
 function M.isInFront(block_name)
@@ -101,7 +110,6 @@ function M.isInFront(block_name)
 	end
 	return false
 end
-
 function M.cleanInventory(overrides)
 	local discardList = dofile("_config_cleanInventory.lua")
 	-- table: name, count

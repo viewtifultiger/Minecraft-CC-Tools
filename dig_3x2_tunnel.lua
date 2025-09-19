@@ -1,3 +1,10 @@
+--[[
+TO DO:
+- Automatically set torches every 3-4 iterations
+- handle finding bedrock
+]]
+
+
 local tunnel = require("tunnel_3x1")
 local ct = require("codetools")
 local tt = require("turtletools")
@@ -6,9 +13,6 @@ local tt = require("turtletools")
 local placeTorches = ct.verifyTorchDownSetting(false)
 
 -- TO DO --
--- have tt.digUTurn functions check blocks (especially gravel)
--- handle finding bedrock
--- make code more efficient
 -- find a way to dig tunnel going left rather than to the right
 -- investigate two incomplete stacks found in 2 different slots
 	-- refer to notes
