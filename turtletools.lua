@@ -71,24 +71,37 @@ function M.compareAndDig(blockAvoiding)
 		return false
 	end
 end
+function M.repeatDig(block)
+	while true do
+		local _, data = turtle.inspect()
+		if data.name == "minecraft:" .. block then
+			turtle.dig()
+		else
+			return
+		end
+	end
+end
 function M.digUTurnRight()
 	turtle.turnRight()
-	if not M.isInFront("bedrock") then
+	if not M.isInFront("gravel") then
 		turtle.dig()
 		turtle.forward()
 		turtle.turnRight()
-		return true
+	else
+		M.repeatDig("gravel")
 	end
-	return false
 end
 function M.digUTurnLeft()
 	turtle.turnLeft()
-	if not M.isInFront("bedrock") then
+	if not M.isInFront("gravel") then
 		turtle.dig()
 		turtle.forward()
 		turtle.turnLeft()
 		return true
+	else
+		M.repeatDig("gravel")
 	end
+
 	return false
 end
 
