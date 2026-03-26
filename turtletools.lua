@@ -4,7 +4,31 @@
 
 local M = {}
 
--- PRIVATE FUNCTIONS --
+-- LOCAL FUNCTIONS --
+
+-- BASICS--
+-----------------------------------------------------------------------------
+M.turn_functions = {
+	left = turtle.turnLeft,
+	right = turtle.turnRight,
+}
+-----------------------------------------------------------------------------
+M.inspect_functions = {
+	forward = turtle.inspect,
+	up = turtle.inspectUp,
+	down = turtle.inspectDown
+}
+-----------------------------------------------------------------------------
+M.dig_functions = {
+	forward = turtle.dig,
+	up = turtle.digUp,
+	down = turtle.digDown
+}
+-----------------------------------------------------------------------------
+
+
+
+
 
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
