@@ -11,11 +11,11 @@
 --	of information that includes blocks that were dug
 -- 7 find a way to have the turtle mine blocks around even though it found an invalid block in the last position of the dig loop
 
-
 	-- DEBUG NOTES--
 
 	
 	-- Working on: 
+	refactor the dig function to only take the options table as an argument
 		
 ]]
 
@@ -23,12 +23,21 @@ local hole = require("hole_2x2")
 local ct = require("codetools")
 local tt = require("turtletools")
 
-io.write("Enter the direction to mine (left/right): ")
-local next_hole_direction = io.read()
+local options = {
+	next_hole_direction = "right",
+	iterations = 1,
+	place_torches = false,
+	blacklist = {
+		["minecraft:bedrock"] = true
+	}
+
+}
+
+local next_hole_direction = options.next_hole_direction
 
 if next_hole_direction ~= "left" and next_hole_direction ~= "right" then	-- temporary fix
 	print("not a valid direction")
-	return
+	return false
 end
 
 local turn = tt.turn_functions[next_hole_direction]
@@ -39,8 +48,7 @@ local y = 95
 
 print("Fuel Level: ", currentFuel)
 
-io.write("Enter number of iterations: ")
-local iterations = tonumber(io.read())
+local iterations = options.iterations
 
 -- 3 moves per level (going down/going up/sidemovement) * number of levels (current + 63 below y=0 + 2 for moving to next iteration) * total iterations 
 local max_cost = 3 * (y + 65) * iterations
@@ -48,17 +56,17 @@ local startingFuel = currentFuel
 
 if startingFuel < max_cost then
 	print("You don't have enough fuel")
-	return
+	return false
 else
-	print("Maximum cost: " .. max_cost)
+	print("Maximum cost: ", max_cost)
 end
 
-local placeTorches = ct.verifyTorchDownSetting(false)
+local placeTorches = options.place_torches
 
 
 local horizontal_position
 for i=1,iterations do
-	horizontal_position = hole.dig(next_hole_direction, placeTorches)
+	horizontal_position = hole.dig(options)
 	turn() -- turn towards the next hole
 
 	if horizontal_position == next_hole_direction then

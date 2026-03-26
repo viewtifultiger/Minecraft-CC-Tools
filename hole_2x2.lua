@@ -67,9 +67,10 @@ end
 --@param next_hole_direction string: determines the direction of the next hole
 --@param placeTorches boolean: determines whether the turtle should place torches 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-function M.dig(next_hole_direction, options)
+function M.dig(options)
 	local valid, tabl -- valid_block: bool; tabl: table block data
-	local horizontal_position = next_hole_direction == "left" and "right" or "left" -- turtle starts at the opposite end of where it intends to mine
+	local mining_direction = options.next_hole_direction
+	local horizontal_position = mining_direction == "left" and "right" or "left" -- turtle starts at the opposite end of where it intends to mine
 	local dig = tt.inspect_and_dig
 	local dig_square = dig_2x2_square
 	local depth = 0
@@ -78,7 +79,7 @@ function M.dig(next_hole_direction, options)
 
 	while true do
 		-- Place torches every 8 blocks
-		if options.placeTorches and depth % 8 == 0 then
+		if options.place_torches and depth % 8 == 0 then
 			tt.torch()
 		end
 
@@ -97,13 +98,13 @@ function M.dig(next_hole_direction, options)
 		turtle.down()
 		depth = ct.inc(depth)
 
-		valid, horizontal_position = M.dig_2x2_square(next_hole_direction)
+		valid, horizontal_position = dig_square(mining_direction)
 
 		if not valid then
 			break
 		end
 
-		next_hole_direction = next_hole_direction == "left" and "right" or "left"
+		mining_direction = mining_direction == "left" and "right" or "left"
 
 	end
 --------------------------------------------------------------------------------------------------
