@@ -76,25 +76,32 @@ end
 
 -- TO DO --
 -- make sure dig() can handle bedrock
-function M.dig(distance)
-	local dontDig = dofile("_config_dontDigSettings.lua")
-	local block, data = turtle.inspect()
-	for i =1, distance do
-	    if block == true and not dontDig[data.name] then
-	        turtle.dig()
-	        block, data = turtle.inspect()
-	    end
+
+
+-----------------------------------------------------------------------------
+function M.block_is_valid(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
+	local block_present, tabl = M.inspect_functions[direction]()
+
+	if not block_present then
+		return true, nil
 	end
+
+	return not blacklist[tabl.name], tabl
 end
-function M.compareAndDig(blockAvoiding)
-	local _, data = turtle.inspect()
-	if data.name ~= blockAvoiding then
-		turtle.dig()
-		return true
-	else
-		return false
+-----------------------------------------------------------------------------
+function M.inspect_and_dig(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
+	local block_is_valid, tabl = M.block_is_valid(direction, blacklist)
+
+	if not tabl then	-- if empty space, skip digging and return true
+		return block_is_valid, nil
 	end
+
+	if block_is_valid then	-- dig if valid block
+		M.dig_functions[direction]()
+	end
+	return block_is_valid, tabl -- return validity and block data
 end
+-----------------------------------------------------------------------------
 function M.repeatDig(block)
 	while true do
 		local _, data = turtle.inspect()
