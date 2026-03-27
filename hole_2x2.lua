@@ -1,5 +1,6 @@
 local ct = require("codetools")
 local tt = require("turtletools")
+local turtle_state = require("turtle_state")
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
 
 local M = {}
@@ -67,7 +68,9 @@ end
 --@param next_hole_direction string: determines the direction of the next hole
 --@param placeTorches boolean: determines whether the turtle should place torches 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-function M.dig(options)
+function M.dig(options, state)
+	options = options or {}
+	state = state or turtle_state.create_state()
 	local valid, tabl -- valid_block: bool; tabl: table block data
 	local mining_direction = options.next_hole_direction
 	local horizontal_position = mining_direction == "left" and "right" or "left" -- turtle starts at the opposite end of where it intends to mine

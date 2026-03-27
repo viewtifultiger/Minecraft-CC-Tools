@@ -24,8 +24,8 @@ local ct = require("codetools")
 local tt = require("turtletools")
 
 local options = {
-	next_hole_direction = "right",
-	iterations = 1,
+	next_hole_direction = "left",
+	iterations = 2,
 	place_torches = false,
 	blacklist = {
 		["minecraft:bedrock"] = true
