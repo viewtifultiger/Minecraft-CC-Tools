@@ -7,19 +7,17 @@ local M = {}
 
 --[[
 	Notes:
-		When it comes to the positioning of the turtle after digging the 2x2 square, there would be no need to return the position of the
-		turtle of where it is on the grid. It's position would just be the opposite of the direction it's given to mine. The position 
-		can be handled in the upper level program. The real question is, what do we return?
 ]]
 
--- TO DO --
+--[[TO DO --
 -- 1 find an algorithm to "clean up" after finding all blocks to be invalid (mine blocks not checked)
--- 2 have the dig function accept a dictionary of dig options including placeTorches, clean inventory frequency, and more
--- 5 let the M.dig() function accept a table of options
-
-
+ - 2 collect information about the blocks that are dug during the dig_2x2_square
+ - 3 collect information about the blocks that are dug during the dig_and_inspect
+]]
 --[[
 	-- WORKING ON --
+ - 2 collect information about the blocks that are dug during the dig_2x2_square
+ -- have dig_2x2_square return an informative state of the turtle
 
 ]]
 
