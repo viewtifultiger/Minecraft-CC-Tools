@@ -1,6 +1,7 @@
 local ct = require("codetools")
 local tt = require("turtletools")
-local turtle_state = require("turtle_state")
+local turtle_states = require("turtle_states")
+local dig_options = require("dig_options")
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
 
 local M = {}
@@ -13,54 +14,74 @@ local M = {}
 -- 1 find an algorithm to "clean up" after finding all blocks to be invalid (mine blocks not checked)
  - 2 collect information about the blocks that are dug during the dig_2x2_square
  - 3 collect information about the blocks that are dug during the dig_and_inspect
+ - 4 change inspect_and_dig to return false when no block is mined
 ]]
 --[[
 	-- WORKING ON --
  - 2 collect information about the blocks that are dug during the dig_2x2_square
  -- have dig_2x2_square return an informative state of the turtle
+ -- merging the horizontal position into the state when returning from the dig_2x2_square
+ -- remove the direction parameter and use the state and options.
+ -- add a default options tabl
 
 ]]
+local function record_mined_block(state, block_name)
+		state.stats.blocks_mined_by_name[block_name] = (state.stats.blocks_mined_by_name[block_name] or 0) + 1
+end
+local function flip_horizontal_direction(direction)
+	return direction == "left" and "right" or "left"
+end
 
-local function dig_2x2_square(direction, blacklist) -- direction: string
-	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block, tabl
-	local turn, opposite_turn
-	local horizontal_position = direction == "left" and "right" or "left"
+local function dig_2x2_square(direction_to_mine, state, options) -- direction_to_mine: string
+	-----TABLES-------
+	state = state or turtle_states.create_state()
+	options = options or dig_options.create_dig_option()
+	-----FUNCTIONS----
 	local dig = tt.inspect_and_dig
+	local turn = tt.turn_functions[direction_to_mine]
+	local opposite_turn = tt.turn_functions[flip_horizontal_direction(direction_to_mine)]
+	-------------------
+	state.horizontal_position = flip_horizontal_direction(direction_to_mine)
 
-	turn = tt.turn_functions[direction]
-	opposite_turn = tt.turn_functions[direction == "left" and "right" or "left"]
 
-	local valid_block, tabl = dig("forward", blacklist) -- 1st block
+	local dug, block_data
 
-	if not valid_block then
-		return false, horizontal_position
+	-- 1st block
+	dug, block_data = dig("forward", options.blacklist) 
+	if not dug then
+		return false, state
+	elseif block_data and block_data.name then
+		record_mined_block(state, block_data.name)
 	end
 
 	turn()
 
-	valid_block, tabl = dig("forward", blacklist) -- 2nd block
-
-	if not valid_block then
+	-- 2nd block
+	dug, block_data = dig("forward", options.blacklist)
+	if not dug then
 		opposite_turn()
-		return false, horizontal_position
+		return false, state
+	elseif block_data and block_data.name then
+		record_mined_block(state, block_data.name)
 	end
 
 	turtle.forward()
-	horizontal_position = horizontal_position == "left" and "right" or "left"
+	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
 	opposite_turn()
 
-	valid_block, tabl = dig("forward", blacklist)	-- 3rd block
+	-- 3rd block
+	dug, block_data = dig("forward", options.blacklist)
+	if not dug then
+		return false, state
+	elseif block_data and block_data.name then
+		record_mined_block(state, block_data.name)
+	end
 
-	if not valid_block then
-		return false, horizontal_position
-	end	
-
-	return true, horizontal_position
+	return true, state
 end
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-function M.dig_2x2_square(direction, blacklist)
-	return dig_2x2_square(direction, blacklist)
+function M.dig_2x2_square(direction_to_mine, state, options)
+	return dig_2x2_square(direction_to_mine, state, options)
 end
 
 --@param next_hole_direction string: determines the direction of the next hole
