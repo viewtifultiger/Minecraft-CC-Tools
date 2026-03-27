@@ -4,7 +4,8 @@ function M.create_state()
     return {
         facing = "north",
         fuel = 0,
-        horizontal_position = "right",
+        depth = 0,
+
         position = { x = 0, y = 0, z = 0},
         inventory = {
             used_slots = 0,

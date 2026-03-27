@@ -1,6 +1,8 @@
 --[[
 - Allow isInFront() to accept a table
 ]]
+local DEFAULT_BLACKLIST = require("_block_list_blocks")
+local turtle_states = require("turtle_states")
 
 local M = {}
 
@@ -26,9 +28,46 @@ M.dig_functions = {
 }
 -----------------------------------------------------------------------------
 
+local function record_mined_block(state, block_name)
+		state.stats.blocks_mined_by_name[block_name] = (state.stats.blocks_mined_by_name[block_name] or 0) + 1
+end
 
 
+-----------------------------------------------------------------------------
+local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
+	blacklist = blacklist or DEFAULT_BLACKLIST
+	local block_present, tabl = M.inspect_functions[direction]()
 
+	if not block_present then
+		return true, nil
+	end
+
+	return not blacklist[tabl.name], tabl
+end
+
+function M.inspect_validity(direction, blacklist)
+	return inspect_validity(direction, blacklist)
+end
+-----------------------------------------------------------------------------
+function M.inspect_and_dig(direction, blacklist, state) --> bool: is block is valid; table (block data): nil if no block data
+	blacklist = blacklist or DEFAULT_BLACKLIST
+	--------------------------
+	local block_is_valid, block_data = inspect_validity(direction, blacklist)
+
+	if not block_data then	-- if empty space, skip digging and return true
+		return false, block_data
+	end
+
+	if block_is_valid then	-- dig if valid block
+		M.dig_functions[direction]()
+		if state then
+			record_mined_block(state, block_data.name)
+		end
+	end
+
+	return block_is_valid, block_data-- return validity and block data
+end
+-----------------------------------------------------------------------------
 
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
@@ -78,30 +117,6 @@ end
 -- make sure dig() can handle bedrock
 
 
------------------------------------------------------------------------------
-function M.block_is_valid(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
-	local block_present, tabl = M.inspect_functions[direction]()
-
-	if not block_present then
-		return true, nil
-	end
-
-	return not blacklist[tabl.name], tabl
-end
------------------------------------------------------------------------------
-function M.inspect_and_dig(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
-	local block_is_valid, tabl = M.block_is_valid(direction, blacklist)
-
-	if not tabl then	-- if empty space, skip digging and return true
-		return block_is_valid, nil
-	end
-
-	if block_is_valid then	-- dig if valid block
-		M.dig_functions[direction]()
-	end
-	return block_is_valid, tabl -- return validity and block data
-end
------------------------------------------------------------------------------
 function M.repeatDig(block)
 	while true do
 		local _, data = turtle.inspect()
