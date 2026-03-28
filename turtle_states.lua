@@ -1,6 +1,6 @@
 local M = {}
 
-function M.create_state()
+function M.create()
     return {
         facing = "north",
         fuel = 0,
