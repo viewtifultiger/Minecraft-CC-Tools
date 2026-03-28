@@ -1,8 +1,7 @@
 --[[
 - Allow isInFront() to accept a table
 ]]
-local DEFAULT_BLACKLIST = require("_block_list_blocks")
-local turtle_states = require("turtle_states")
+local DEFAULT_BLACKLIST = require("_black_list_blocks")
 
 local M = {}
 
@@ -28,44 +27,44 @@ M.dig_functions = {
 }
 -----------------------------------------------------------------------------
 
+--[[
+NOTES:
+
+]]
 local function record_mined_block(state, block_name)
-		state.stats.blocks_mined_by_name[block_name] = (state.stats.blocks_mined_by_name[block_name] or 0) + 1
+		state.stats.blocks_mined_by_name[block_name] =
+		(state.stats.blocks_mined_by_name[block_name] or 0) + 1
 end
 
 
 -----------------------------------------------------------------------------
+---checks block validity by refering to the blacklist from the context
 local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block_present, tabl = M.inspect_functions[direction]()
+	local block_is_present, block_data = M.inspect_functions[direction]()
 
-	if not block_present then
-		return true, nil
-	end
-
-	return not blacklist[tabl.name], tabl
+	return not blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
 
 function M.inspect_validity(direction, blacklist)
 	return inspect_validity(direction, blacklist)
 end
 -----------------------------------------------------------------------------
-function M.inspect_and_dig(direction, blacklist, state) --> bool: is block is valid; table (block data): nil if no block data
-	blacklist = blacklist or DEFAULT_BLACKLIST
-	--------------------------
-	local block_is_valid, block_data = inspect_validity(direction, blacklist)
+function M.inspect_and_dig(direction, context) --> bool: is block is valid; table (block data): nil if no block data
+	local blacklist = context
+		and context.dig_config
+		and context.dig_config.blacklist
+	local dig_is_valid, block_data = inspect_validity(direction, blacklist)
 
-	if not block_data then	-- if empty space, skip digging and return true
-		return false, block_data
-	end
-
-	if block_is_valid then	-- dig if valid block
-		M.dig_functions[direction]()
-		if state then
-			record_mined_block(state, block_data.name)
+	if dig_is_valid and block_data and M.dig_functions[direction]() then -- block is valid, block has data, something was dug
+		if context then
+			record_mined_block(context.state, block_data.name)
 		end
+		return true, block_data -- block was valid and dug, block_data
 	end
 
-	return block_is_valid, block_data-- return validity and block data
+	return false, block_data -- block was invalid or empty or nothing was dug
+								-- invalid -> block_data; empty block -> nil
 end
 -----------------------------------------------------------------------------
 
