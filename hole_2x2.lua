@@ -1,7 +1,7 @@
 local ct = require("codetools")
 local tt = require("turtletools")
 local turtle_states = require("turtle_states")
-local dig_options = require("dig_options")
+local dig_config = require("dig_config")
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
 
 local M = {}
@@ -25,6 +25,7 @@ local M = {}
  -- change inspect_and_dig function to handle states/options
  -- 4 change inspect_and_dig to return false when no block is mined
  -- moving the block counting to the lower level dig functions
+ -- merging options and state into a higher lever context tabl
 
 ]]
 local function record_mined_block(state, block_name)
