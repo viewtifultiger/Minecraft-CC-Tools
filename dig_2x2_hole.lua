@@ -15,7 +15,7 @@
 
 	
 	-- Working on: 
-	refactor the dig function to only take the options table as an argument
+	refactor the dig function to only take a context as an argument
 		
 ]]
 
