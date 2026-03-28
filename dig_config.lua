@@ -1,10 +1,8 @@
 local M = {}
 
-function M.create_dig_option()
+function M.create()
     return {
-
 	["place_torches"] = false,
-
 	blacklist = {
 		["minecraft:bedrock"] = true,
 	}
