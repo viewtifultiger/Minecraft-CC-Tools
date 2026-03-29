@@ -1,7 +1,6 @@
 local ct = require("codetools")
 local tt = require("turtletools")
-local turtle_states = require("turtle_states")
-local dig_config = require("dig_config")
+local context_builder = require("context_builder")
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
 
 local M = {}
@@ -28,9 +27,7 @@ local M = {}
  -- merging options and state into a higher lever context tabl
 
 ]]
-local function record_mined_block(state, block_name)
-		state.stats.blocks_mined_by_name[block_name] = (state.stats.blocks_mined_by_name[block_name] or 0) + 1
-end
+
 local function flip_horizontal_direction(direction)
 	return direction == "left" and "right" or "left"
 end
@@ -40,12 +37,17 @@ end
 	---@param state turtle_state
 	---@param options dig_options
 ]]
-local function dig_2x2_square(direction_to_mine, state, options) --> boolean, turtle_state
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+local function dig_2x2_square(direction_to_mine, context) --> boolean, turtle_state
+	if direction_to_mine ~= "left" and direction_to_mine ~= "right" then
+		error('invalid direction, expected "left" or "right", got "' .. tostring(direction_to_mine) .. '"', 2)
+	end
 	-----TABLES-------
-	state = state or turtle_states.create_state()
-	options = options or dig_options.create_dig_option()
+	context = context or context_builder.create()
+	local state = context.state
+	local dig_config = context.dig_config
 	-----FUNCTIONS----
-	local dig = tt.inspect_and_dig
+	local dig_and_count = tt.inspect_and_dig
 	local turn = tt.turn_functions[direction_to_mine]
 	local opposite_turn = tt.turn_functions[flip_horizontal_direction(direction_to_mine)]
 	------------------
@@ -54,22 +56,18 @@ local function dig_2x2_square(direction_to_mine, state, options) --> boolean, tu
 	local dug, block_data
 
 	-- 1st block
-	dug, block_data = dig("forward", options.blacklist, state)
-	if not dug then
-		return false, state
-	elseif block_data and block_data.name then
-		record_mined_block(state, block_data.name)
+	dug, block_data = dig_and_count("forward", context)
+	if not dug and block_data then	-- found an invalid block
+		return false, context
 	end
 
 	turn()
 
 	-- 2nd block
-	dug, block_data = dig("forward", options.blacklist)
-	if not dug then
+	dug, block_data = dig_and_count("forward", context)
+	if not dug and block_data then -- found an invalid block
 		opposite_turn()
-		return false, state
-	elseif block_data and block_data.name then
-		record_mined_block(state, block_data.name)
+		return false, context
 	end
 
 	turtle.forward()
@@ -77,16 +75,13 @@ local function dig_2x2_square(direction_to_mine, state, options) --> boolean, tu
 	opposite_turn()
 
 	-- 3rd block
-	dug, block_data = dig("forward", options.blacklist)
-	if not dug then
-		return false, state
-	elseif block_data and block_data.name then
-		record_mined_block(state, block_data.name)
+	dug, block_data = dig_and_count("forward", context)
+	if not dug and block_data then	-- found an invalid block
+		return false, context
 	end
 
-	return true, state
+	return true, context
 end
--------------------------------------------------------------------------------------------------------------------------------------------------------
 function M.dig_2x2_square(direction_to_mine, state, options)
 	return dig_2x2_square(direction_to_mine, state, options)
 end
@@ -94,10 +89,11 @@ end
 --@param options dig_options
 --@param state turtle_states
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-function M.dig(next_hole_direction, state, options)
+function M.dig(next_hole_direction, context)
 	-----TABLES-------
-	state = state or turtle_states.create_state()
-	options = options or dig_options.create_dig_option()
+	context = context or context_builder.create()
+	local state = context.state
+	local dig_config = context.dig_config
 	-----FUNCTIONS----	
 	local dig = tt.inspect_and_dig
 	local dig_square = dig_2x2_square
@@ -105,14 +101,13 @@ function M.dig(next_hole_direction, state, options)
 	local mining_direction = next_hole_direction
 	state.depth = 0
 	------------------
-	local success, tabl
-	
+	local success, dug, block_data
 
 	tt.selectEmptySlot()
 
 	while true do
 		-- Place torches every 8 blocks
-		if options.place_torches and state.depth % 8 == 0 then
+		if dig_config.place_torches and state.depth % 8 == 0 then
 			tt.torch()
 		end
 
@@ -122,28 +117,28 @@ function M.dig(next_hole_direction, state, options)
 		end
 	
 ------------------------MAIN DIG LOOP-------------------------------------------------
-		success, tabl = dig("down", DEFAULT_BLACKLIST) --WORKING ON MODIFYING INSPECT_AND_DIG
+		dug, block_data = dig("down", context)
 
-		if not success then
+		if not dug and block_data then
 			break
 		end
 
 		turtle.down()
-		depth = ct.inc(depth)
+		state.depth = ct.inc(state.depth)
 
-		success, state = dig_square(mining_direction)
+		success = dig_square(mining_direction, context)
 
-		if not success then
+		if not success then -- an invalid block was found in the square
 			break
 		end
 
-		mining_direction = mining_direction == "left" and "right" or "left"
+		mining_direction = flip_horizontal_direction(mining_direction)
 
 	end
 --------------------------------------------------------------------------------------------------
 	tt.cleanInventory()
 	tt.returnToSurface(depth)
-	return valid, state
+	return true, context
 
 end
 
