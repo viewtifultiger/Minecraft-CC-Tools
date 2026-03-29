@@ -22,18 +22,10 @@
 local hole = require("hole_2x2")
 local ct = require("codetools")
 local tt = require("turtletools")
+local context_builder = require("context_builder")
 
-local options = {
-	next_hole_direction = "left",
-	iterations = 2,
-	place_torches = false,
-	blacklist = {
-		["minecraft:bedrock"] = true
-	}
 
-}
-
-local next_hole_direction = options.next_hole_direction
+local next_hole_direction = "left"
 
 if next_hole_direction ~= "left" and next_hole_direction ~= "right" then	-- temporary fix
 	print("not a valid direction")
@@ -48,7 +40,7 @@ local y = 95
 
 print("Fuel Level: ", currentFuel)
 
-local iterations = options.iterations
+local iterations = 1
 
 -- 3 moves per level (going down/going up/sidemovement) * number of levels (current + 63 below y=0 + 2 for moving to next iteration) * total iterations 
 local max_cost = 3 * (y + 65) * iterations
@@ -61,15 +53,22 @@ else
 	print("Maximum cost: ", max_cost)
 end
 
-local placeTorches = options.place_torches
+local success
+local context = context_builder.create()
+local state = context.state
+local stats = state.stats
+local blocks_mined = stats.blocks_mined
+local blocks_mined_by_name = state.stats.blocks_mined_by_name
+-- local dig_config = context.dig_config
+
+state.horizontal_position = "left"
 
 
-local horizontal_position
 for i=1,iterations do
-	horizontal_position = hole.dig(options)
+	success = hole.dig(state.horizontal_position)
 	turn() -- turn towards the next hole
 
-	if horizontal_position == next_hole_direction then
+	if state.horizontal_position == next_hole_direction then
 		tt.forward(1)
 	else
 		tt.forward(2)
@@ -84,6 +83,9 @@ turn()
 tt.forward(3)
 
 local fuelCurrentlyExpended = startingFuel - turtle.getFuelLevel()
-print("Complete!")
+print("Success:", success)
 print("Fuel Remaining:", turtle.getFuelLevel())
 print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())
+
+print("Total Blocks Mined: ", blocks_mined)
+print("Cobblestone Blocks Mined: ", blocks_mined_by_name["minecraft:cobblestone"])
