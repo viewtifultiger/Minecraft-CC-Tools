@@ -6,8 +6,6 @@ local DEFAULT_BLACKLIST = require("_black_list_blocks")
 local M = {}
 
 -- LOCAL FUNCTIONS --
-
--- BASICS--
 -----------------------------------------------------------------------------
 M.turn_functions = {
 	left = turtle.turnLeft,
@@ -26,18 +24,13 @@ M.dig_functions = {
 	down = turtle.digDown
 }
 -----------------------------------------------------------------------------
-
---[[
-NOTES:
-
-]]
 local function record_mined_block(state, block_name)
-		state.stats.blocks_mined_by_name[block_name] =
-		(state.stats.blocks_mined_by_name[block_name] or 0) + 1
+	local stats = state.stats
+		stats.blocks_mined_by_name[block_name] =
+			(stats.blocks_mined_by_name[block_name] or 0) + 1
+		stats.blocks_mined = stats.blocks_mined + 1
 end
 
-
------------------------------------------------------------------------------
 ---checks block validity by refering to the blacklist from the context
 local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
@@ -45,11 +38,12 @@ local function inspect_validity(direction, blacklist) --> bool: is block is vali
 
 	return not blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
-
+-----------------------------------------------------------------------------
 function M.inspect_validity(direction, blacklist)
 	return inspect_validity(direction, blacklist)
 end
------------------------------------------------------------------------------
+
+---checks if block is valid and digs, returns boolean if something was dug and block data regardless of validity
 function M.inspect_and_dig(direction, context) --> bool: is block is valid; table (block data): nil if no block data
 	local blacklist = context
 		and context.dig_config
@@ -64,10 +58,12 @@ function M.inspect_and_dig(direction, context) --> bool: is block is valid; tabl
 	end
 
 	return false, block_data -- block was invalid or empty or nothing was dug
-								-- invalid -> block_data; empty block -> nil
+								-- invalid -> block_data table; empty block -> nil table
 end
 -----------------------------------------------------------------------------
 
+
+------------ ITS A MESS DOWN THERE ---------------------------------
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
 	local selected = M.selectItem("torch")
