@@ -9,12 +9,14 @@
 -- 7 find a way to navigate to the next hole position in order to dig upwards
 -- 4 create movement functions and have them receive a context
 -- 5 create a function that prints important stats
+-- consider changing inspect_validity to accept dig_options instead of a simple blacklist
+-- 
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
 	-- Working on: 
-		
+		create movement wrappers to add data to the context 
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
@@ -79,4 +81,4 @@ print("Fuel Remaining:", turtle.getFuelLevel())
 print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())
 
 print("Total Blocks Mined: ", stats.blocks_mined)
-print("Stone Blocks Mined: ", stats.blocks_mined_by_name["minecraft:stone"])
+-- print("Stone Blocks Mined: ", stats.blocks_mined_by_name["minecraft:stone"])
