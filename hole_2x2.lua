@@ -1,7 +1,6 @@
-local ct = require("codetools")
 local tt = require("turtletools")
 local context_builder = require("context_builder")
-local DEFAULT_BLACKLIST = require("_black_list_blocks")
+local DIG_REASONS = tt.DIG_REASONS
 
 local M = {}
 
@@ -11,135 +10,122 @@ local M = {}
 
 --[[TO DO --
 -- 1 find an algorithm to "clean up" after finding all blocks to be invalid (mine blocks not checked)
- - 2 collect information about the blocks that are dug during the dig_2x2_square
- - 3 collect information about the blocks that are dug during the dig_and_inspect
- - 4 change inspect_and_dig to return false when no block is mined
- - change the logic in the digging functions to handle false digs and in valid blocks
 ]]
 --[[
 	-- WORKING ON --
- - 2 collect information about the blocks that are dug during the dig_2x2_square
- -- have dig return an informative state of the turtle
- -- add a default options tabl to the dig function
- -- change inspect_and_dig function to handle states/options
- -- 4 change inspect_and_dig to return false when no block is mined
- -- moving the block counting to the lower level dig functions
- -- merging options and state into a higher lever context tabl
-
+	
 ]]
-
+---------------------------------------------------------------------
+local STOP_REASONS = {
+	[DIG_REASONS.BLACKLISTED] = true,
+	[DIG_REASONS.DIG_FAILED] = true
+}
+---------------------------------------------------------------------
 local function flip_horizontal_direction(direction)
 	return direction == "left" and "right" or "left"
 end
-
 --[[
-	--@param direction_to_mine string
-	---@param state turtle_state
-	---@param options dig_options
+	--@param direction_to_mine string "left" | "right"
+	---@param context context_builder
 ]]
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-local function dig_2x2_square(direction_to_mine, context) --> boolean, turtle_state
-	if direction_to_mine ~= "left" and direction_to_mine ~= "right" then
-		error('invalid direction, expected "left" or "right", got "' .. tostring(direction_to_mine) .. '"', 2)
+local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle_state; state changes: horizontal_position, blocks_mined, blocks_mined_by_name
+	if start_mining_towards ~= "left" and start_mining_towards ~= "right" then
+		error('invalid direction, expected "left" or "right", got "' .. tostring(start_mining_towards) .. '"', 2)
 	end
-	-----TABLES-------
+	-------------TABLES----------------------------------------------------------------------------
 	context = context or context_builder.create()
 	local state = context.state
 	local dig_config = context.dig_config
-	-----FUNCTIONS----
-	local dig_and_count = tt.inspect_and_dig
-	local turn = tt.turn_functions[direction_to_mine]
-	local opposite_turn = tt.turn_functions[flip_horizontal_direction(direction_to_mine)]
-	------------------
-	state.horizontal_position = flip_horizontal_direction(direction_to_mine)
-	------------------
-	local dug, block_data
-
-	-- 1st block
-	dug, block_data = dig_and_count("forward", context)
-	if not dug and block_data then	-- found an invalid block
-		return false, context
+	local blacklist = dig_config.blacklist
+	------------FUNCTIONS--------------------------------------------------------------------------
+	local try_dig = tt.try_dig
+	local turn = tt.turn_functions[start_mining_towards]
+	local opposite_turn = tt.turn_functions[flip_horizontal_direction(start_mining_towards)]
+	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
+	state.horizontal_position = flip_horizontal_direction(start_mining_towards)
+	-------------LOCALS----------------------------------------------------------------------------
+	local dug, block_data, reason
+	-----------------------------------------------------------------------------------------------
+	
+	dug, block_data, reason = try_dig("forward", context)
+	if STOP_REASONS[reason] then	-- found an invalid block
+		return false, context, reason
 	end
 
 	turn()
 
-	-- 2nd block
-	dug, block_data = dig_and_count("forward", context)
-	if not dug and block_data then -- found an invalid block
+	dug, block_data, reason = try_dig("forward", context)
+	if STOP_REASONS[reason] then	-- found an invalid block
 		opposite_turn()
-		return false, context
+		return false, context, reason
 	end
 
+	-- horizontal movement
 	turtle.forward()
 	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
 	opposite_turn()
 
-	-- 3rd block
-	dug, block_data = dig_and_count("forward", context)
-	if not dug and block_data then	-- found an invalid block
-		return false, context
+	dug, block_data, reason = try_dig("forward", context)
+	if STOP_REASONS[reason] then	-- found an invalid block
+		return false, context, reason
 	end
 
-	return true, context
+	return true, context, reason
 end
-function M.dig_2x2_square(direction_to_mine, state, options)
-	return dig_2x2_square(direction_to_mine, state, options)
+function M.dig_2x2_square(start_mining_towards, context)
+	return dig_2x2_square(start_mining_towards, context)
 end
 
 --@param options dig_options
 --@param state turtle_states
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-function M.dig(next_hole_direction, context)
-	-----TABLES-------
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function M.dig_hole_down(start_mining_towards, context) --> success boolean; context context_builder
+	-------------TABLES----------------------------------------------------------------------------
 	context = context or context_builder.create()
 	local state = context.state
 	local dig_config = context.dig_config
-	-----FUNCTIONS----	
-	local dig = tt.inspect_and_dig
+	------------FUNCTIONS--------------------------------------------------------------------------
+	local try_dig = tt.try_dig
 	local dig_square = dig_2x2_square
-	------------------
-	local mining_direction = next_hole_direction
+	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.depth = 0
-	------------------
-	local success, dug, block_data
+	-------------LOCALS----------------------------------------------------------------------------
+	local success, dug, block_data, reason
+	-----------------------------------------------------------------------------------------------
 
 	tt.selectEmptySlot()
 
 	while true do
-		-- Place torches every 8 blocks
+		-----------------------SETTINGS-HANDLING---------------------------------------------------
 		if dig_config.place_torches and state.depth % 8 == 0 then
 			tt.torch()
 		end
-
-		-- Clean Invetory every 12 block
 		if state.depth % 12 == 0 then
 			tt.cleanInventory()
 		end
-	
-------------------------MAIN DIG LOOP-------------------------------------------------
-		dug, block_data = dig("down", context)
-
-		if not dug and block_data then
+		------------------------MAIN DIG LOOP------------------------------------------------------
+		dug, block_data, reason = try_dig("down", context)
+		if STOP_REASONS[reason] then
 			break
 		end
 
 		turtle.down()
-		state.depth = ct.inc(state.depth)
+		state.depth = state.depth + 1
 
-		success = dig_square(mining_direction, context)
-
-		if not success then -- an invalid block was found in the square
+		success, _, reason = dig_square(start_mining_towards, context)
+		if STOP_REASONS[reason] then
 			break
 		end
 
-		mining_direction = flip_horizontal_direction(mining_direction)
-
+		start_mining_towards = flip_horizontal_direction(start_mining_towards)
+		-------------------------------------------------------------------------------------------
 	end
---------------------------------------------------------------------------------------------------
 	tt.cleanInventory()
-	tt.returnToSurface(depth)
+	tt.returnToSurface(state.depth)
 	return true, context
-
 end
 
 return M
