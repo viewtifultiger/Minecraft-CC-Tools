@@ -19,20 +19,19 @@ local LIQUID_BLOCKS = {
 
 M.DIG_REASONS = DIG_REASONS
 
--- LOCAL FUNCTIONS --
 -----------------------------------------------------------------------------
 M.turn_functions = {
 	left = turtle.turnLeft,
 	right = turtle.turnRight,
 }
 -----------------------------------------------------------------------------
-M.inspect_functions = {
+local inspect_functions = {
 	forward = turtle.inspect,
 	up = turtle.inspectUp,
 	down = turtle.inspectDown
 }
 -----------------------------------------------------------------------------
-M.dig_functions = {
+local dig_functions = {
 	forward = turtle.dig,
 	up = turtle.digUp,
 	down = turtle.digDown
@@ -50,7 +49,7 @@ end
 ---checks block validity by refering to the blacklist from the context
 local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block_is_present, block_data = M.inspect_functions[direction]()
+	local block_is_present, block_data = inspect_functions[direction]()
 
 	return not blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
@@ -71,7 +70,7 @@ function M.try_dig(direction, context) --> bool: is block is valid; table (block
 			return false, block_data, DIG_REASONS.LIQUID
 		end
 
-		local success, err = M.dig_functions[direction]()
+		local success, err = dig_functions[direction]()
 
 		if success then -- block is valid, block has data, something was dug
 			if context then
