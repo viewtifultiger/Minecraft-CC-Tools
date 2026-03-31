@@ -25,7 +25,7 @@ M.turn_functions = {
 	right = turtle.turnRight,
 }
 -----------------------------------------------------------------------------
-local inspect_functions = {
+M.inspect_functions = {
 	forward = turtle.inspect,
 	up = turtle.inspectUp,
 	down = turtle.inspectDown
@@ -49,13 +49,13 @@ end
 ---checks block validity by refering to the blacklist from the context
 local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block_is_present, block_data = inspect_functions[direction]()
+	local block_is_present, block_data = M.inspect_functions[direction]()
 
 	return not blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
 ----------------MAIN-FUNCTIONS-------------------------------------------------------------------------------------------------------------------------
-function M.inspect_validity(direction, blacklist)
-	return inspect_validity(direction, blacklist)
+function M.inspect_validity(direction, context)
+	return inspect_validity(direction, context.dig_config.blacklist)
 end
 
 ---checks if block is valid and digs, returns boolean if something was dug, block data regardless of validity (maybe nil), reason for boolean result

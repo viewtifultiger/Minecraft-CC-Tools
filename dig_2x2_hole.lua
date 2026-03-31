@@ -22,6 +22,7 @@
 local horizontal_2x2 = require("hole_2x2")
 local tt = require("turtletools")
 local context_builder = require("context_builder")
+local movement = require("movement")
 
 
 local context = context_builder.create()
@@ -63,9 +64,9 @@ for i=1,dig_config.iterations do
 	turn() -- turn towards the next hole
 
 	if state.horizontal_position == next_hole_direction then
-		tt.forward(1)
+		movement.move("forward", context)
 	else
-		tt.forward(2)
+		movement.move("forward", context)
 	end
 
 	if i ~= dig_config.iterations then

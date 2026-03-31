@@ -1,3 +1,5 @@
+local dir = require("direction")
+local tt = require("turtletools")
 
 M = {}
 
@@ -12,11 +14,9 @@ local move_functions = {
     NOTES:
         -- When the turtle moves:
             -- changes state.position by 1 (x, y, or z)
-            -- changes state.fuel by 1 **********************
+            -- changes state.fuel by 1
             --------------------------------
-            -- changes stats.total_moves *******************************8
-
-        
+            -- changes stats.total_moves  
         when it comes to x and y position changes, it all depends on which direction the turtle is facing:
         -- North (back)   : + Z --
         -- North (forward): - Z --
@@ -29,37 +29,76 @@ local move_functions = {
 
             -- Y IS UP/DOWN ( for some reason why is the 3d plane all messed up?)
 
-            WARNING: WE NEED TO GUARANTEE THAT DIRECTION IS VALID 
-            WE NEED TO GUARANTEE THAT THE STATE.FACING IS VALID
+        WARNING: INSPECTING DOES NOT WORK FOR BACK, TURNING AROUND AND INSPECTING IS COUNTER_INTUITIVE.
+                    WE MUST ASSUME THERE IS NO BLOCK
 ]]
+-----------------------------------------------MOVEMENT----------------------------------------------------------------------------------------------
+local function move(direction, state)
+    if type(state) ~= "table" then
+        error("move: context.state is not a table", 2)
+    end
+    local movement = move_functions[direction]
+    local position = state.position
+    local vectors = dir.VECTORS
+    local directions = dir.DIRECTIONS
 
-function M.move(direction, state)
-    local move = move_functions[direction]
+    -- position changes
+    if dir.VALID_DIRECTIONS[direction] then
+        local success, reason = movement()
+        if not success then
+            return false, reason
+        elseif direction == directions.UP or direction == directions.DOWN then
+            position.y = position.y + vectors[direction].y
+        elseif dir.VALID_FACINGS[state.facing] then
+            position.x = position.x + (direction == directions.FORWARD and vectors[state.facing].x or -1 * (vectors[state.facing].x))
+            position.z = position.z + (direction == directions.FORWARD and vectors[state.facing].z or -1 * (vectors[state.facing].z))
+        else
+            error("invalid context.state.facing: " .. '"' .. tostring(state.facing) .. '"', 2)
+        end
+    else
+        error("invalid direction: " .. '"' .. tostring(direction) .. '"', 2)
+    end
 
     state.fuel = state.fuel + 1
     state.total_moves = state.stats.total_moves + 1
-
-    if move == turtle.up or move == turtle.down then
-        state.position['y'] = state.position['y'] + ((move == turtle.up) and 1 or -1)
-    elseif move == turtle.forward or move == turtle.back then
-        if state.facing == "north" then
-            state.position['z'] = state.position['z'] + ((move == turtle.forward) and -1 or 1)
-        elseif state.facing == "east" then
-            state.position['x'] = state.position['x'] + ((move == turtle.forward) and 1 or -1)
-        elseif state.facing == "south" then
-            state.position['z'] = state.position['z'] + ((move == turtle.forward) and 1 or -1)
-        elseif state.facing == "west" then
-            state.position['x'] = state.position['x'] + ((move == turtle.forward) and -1 or 1)
-        else
-            error("invalid facing state: " .. '"' .. tostring(state.facing) .. '"', 2)
-        end
-    else
-        error("invalid direction: " .. '"' ..tostring(direction) .. '"', 2)
-    end
-
-    move()
-
+    return true, nil
 end
+
+function M.move(direction, context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 2)
+    end
+    return move(direction, context.state)
+end
+
+function M.forward(context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 2)
+    end
+    return move(dir.DIRECTIONS.FORWARD, context.state)
+end
+
+function M.back(context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 2)
+    end
+    return move(dir.DIRECTIONS.BACK, context.state)
+end
+
+function M.up(context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 2)
+    end
+    return move(dir.DIRECTIONS.UP, context.state)
+end
+
+function M.down(context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 2)
+    end
+    return move(dir.DIRECTIONS.DOWN, context.state)
+end
+----------------------------------------------TURNING------------------------------------------------------------------------------------------------
 
 
 return M

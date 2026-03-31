@@ -1,5 +1,6 @@
 local tt = require("turtletools")
 local context_builder = require("context_builder")
+local movement = require("movement")
 local DIG_REASONS = tt.DIG_REASONS
 
 local M = {}
@@ -62,7 +63,7 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	end
 
 	-- horizontal movement
-	turtle.forward()
+	movement.move("forward", context)
 	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
 	opposite_turn()
 
@@ -112,7 +113,7 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 			break
 		end
 
-		turtle.down()
+		movement.move("down", context)
 		state.depth = state.depth + 1
 
 		success, _, reason = dig_square(start_mining_towards, context)
