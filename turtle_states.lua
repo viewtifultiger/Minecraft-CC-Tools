@@ -3,7 +3,7 @@ local M = {}
 function M.create()
     return {
         facing = "north",
-        fuel = 0,
+        fuel = turtle.getFuelLevel(),
 
         position = { x = 0, y = 0, z = 0},
         inventory = {
