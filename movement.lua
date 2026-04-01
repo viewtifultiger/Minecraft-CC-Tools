@@ -23,10 +23,10 @@ end
     NOTES:
         -- When the turtle moves:
             -- changes state.position by 1 (x, y, or z)
-            -- changes state.fuel by 1
+            -- reduce state.fuel by 1
             --------------------------------
             -- changes stats.total_moves  
-        when it comes to x and y position changes, it all depends on which direction the turtle is facing:
+        x and z position changes
         -- North (back)   : + Z --
         -- North (forward): - Z --
         -- South (forward): + Z --
@@ -36,16 +36,6 @@ end
         -- East  (forward): + X --
         -- East  (back)   : - X --
 
-            -- Y IS UP/DOWN ( for some reason why is the 3d plane all messed up?)
-
-        WARNING: INSPECTING DOES NOT WORK FOR BACK, TURNING AROUND AND INSPECTING IS COUNTER_INTUITIVE.
-                    WE MUST ASSUME THERE IS NO BLOCK
-
-    TO DO:
-        -- 1 add turn functions to change facing
-    WORKING ON:
-        -- 1 add turn functions to change facing
-        -- 
 ]]
 -----------------------------------------------MOVEMENT----------------------------------------------------------------------------------------------
 local function move(direction, state) --> boolean Whether the turtle could successfully move, string | nil The reason the turtle could not turn
@@ -104,10 +94,12 @@ function M.down(context)
     return move(dir.DIRECTIONS.DOWN, context.state)
 end
 ----------------------------------------------TURNING------------------------------------------------------------------------------------------------
+--[[
+]]
 local function turn(direction, state) --> boolean Whether the turtle could succesfully turn, string | nil The reason the turtle could not turn
     --[[
-    -- turning will change:
-        -- state.facing
+    -- When turtle turns:
+        -- change state.facing direction
     ]]
     if dir.VALID_TURN_DIRECTIONS[direction] then
         local success, reason = turn_functions[direction]()
