@@ -117,7 +117,7 @@ local function turn(direction, state) --> boolean Whether the turtle could succe
     return true, nil
 end
 function M.turn(direction, context)
-    context_checker(context_checker)
+    context_checker(context)
     return turn(direction, context.state)
 end
 function M.turnLeft(context)
