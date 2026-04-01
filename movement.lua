@@ -99,6 +99,38 @@ function M.down(context)
     return move(dir.DIRECTIONS.DOWN, context.state)
 end
 ----------------------------------------------TURNING------------------------------------------------------------------------------------------------
+local function turn(direction, state) --> boolean Whether the turtle could succesfully turn, string | nil The reason the turtle could not turn
+    --[[
+    -- turning will change:
+        -- state.facing
+    ]]
+    if dir.VALID_TURN_DIRECTIONS[direction] then
+        local success, reason = turn_functions[direction]()
+        if not success then
+            return false, reason
+        elseif dir.VALID_FACINGS[state.facing] then
+            state.facing =
+            ((direction == dir.TURN_DIRECTIONS.LEFT) and dir.LEFT_TURN[state.facing]) or dir.RIGHT_TURN[state.facing]
+        else
+            error("invalid state.facing: " .. "'" .. tostring(state.facing) .. '"', 2)
+        end
+    else
+        error("invalid direction: " .. '"' .. tostring(direction) .. '"', 2)
+    end
+    return true, nil
+end
+function M.turn(direction, context)
+    context_checker(context_checker)
+    return turn(direction, context.state)
+end
+function M.turnLeft(context)
+    context_checker(context)
+    return turn(dir.TURN_DIRECTIONS.LEFT, context.state)
+end
+function M.turnRight(context)
+    context_checker(context)
+    return turn(dir.TURN_DIRECTIONS.RIGHT, context.state)
+end
 
 
 return M
