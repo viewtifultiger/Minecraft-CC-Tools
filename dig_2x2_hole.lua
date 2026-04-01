@@ -9,17 +9,22 @@
 -- 7 find a way to navigate to the next hole position in order to dig upwards
 -- 4 create movement functions and have them receive a context
 -- 5 create a function that prints important stats
+-- consider changing inspect_validity to accept dig_options instead of a simple blacklist
+-- consider creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
 	-- Working on: 
-		
+		-- create turn functions within movement wrapper functions to change state.facing
+		-- refactor hole_2x2 to work with return values of movement.move()
+		-- consider changing return values of dig_2x2_square
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
 local tt = require("turtletools")
 local context_builder = require("context_builder")
+local movement = require("movement")
 
 
 local context = context_builder.create()
@@ -34,7 +39,6 @@ local next_hole_direction = dig_config.next_hole_direction
 local dig_hole_down = horizontal_2x2.dig_hole_down
 local turn = tt.turn_functions[next_hole_direction]
 local opposite_turn = tt.turn_functions[next_hole_direction == "left" and "right" or "left"] -- consider moving horizontal_flip() in hole_2x2 elsewhere
-
 
 
 state.fuel = turtle.getFuelLevel()
@@ -61,9 +65,9 @@ for i=1,dig_config.iterations do
 	turn() -- turn towards the next hole
 
 	if state.horizontal_position == next_hole_direction then
-		tt.forward(1)
+		movement.move("forward", context)
 	else
-		tt.forward(2)
+		movement.move("forward", context)
 	end
 
 	if i ~= dig_config.iterations then
@@ -72,11 +76,13 @@ for i=1,dig_config.iterations do
 end
 
 turn()
-tt.forward(3)
+movement.forward()
+movement.forward()
+movement.forward()
 
 print("Success:", success)
 print("Fuel Remaining:", turtle.getFuelLevel())
 print("Total Fuel Used:", startingFuel - turtle.getFuelLevel())
 
 print("Total Blocks Mined: ", stats.blocks_mined)
-print("Stone Blocks Mined: ", stats.blocks_mined_by_name["minecraft:stone"])
+-- print("Stone Blocks Mined: ", stats.blocks_mined_by_name["minecraft:stone"])

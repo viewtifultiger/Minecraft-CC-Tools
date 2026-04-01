@@ -3,8 +3,7 @@ local M = {}
 function M.create()
     return {
         facing = "north",
-        fuel = 0,
-        depth = 0,
+        fuel = turtle.getFuelLevel(),
 
         position = { x = 0, y = 0, z = 0},
         inventory = {
@@ -14,7 +13,7 @@ function M.create()
         },
         stats = {
             holes_dug = 0,
-            moves = 0,
+            total_moves = 0,
             blocks_mined = 0,
             blocks_mined_by_name = {},
 
