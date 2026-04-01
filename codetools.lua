@@ -7,38 +7,6 @@ TO DO:
 
 local M = {}
 
-function M.inc(num)
-    return num + 1
-end
-
-function M.dec(num)
-    return num - 1
-end
-
-
--- PROMPTS --
-function M.hasEnoughFuel(level)
-    -- Fuel check
-    local fuel = turtle.getFuelLevel()
-    if fuel < level then
-        print("Fuel level: ", fuel)
-        print("Are you sure you want to proceed? (y/n)")
-        local inp = io.read()
-        if string.lower(inp) ~= "y" then
-          print("Program Terminated")
-          return false
-        end
-        return true
-    end
-end
-
--- Check if current fuel is sufficient for user's desired expense
-function M.hasFuelExpense(fuelCost)
-    if fuelCost > turtle.getFuelLevel() then
-        return false
-    end
-    return true
-end
 
 function M.verifyTorchDownSetting(placeTorches) --> bool : placeTorches
     if placeTorches == true then
