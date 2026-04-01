@@ -48,15 +48,15 @@ local function record_mined_block(state, block_name)
 end
 
 ---checks block validity by refering to the blacklist from the context
-local function inspect_validity(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
+local function inspect_if_blacklisted(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
 	local block_is_present, block_data = M.inspect_functions[direction]()
 
-	return not blacklist[block_data.name], type(block_data) == "table" and block_data or nil
+	return blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
 ----------------MAIN-FUNCTIONS-------------------------------------------------------------------------------------------------------------------------
 function M.inspect_validity(direction, context)
-	return inspect_validity(direction, context.dig_config.blacklist)
+	return inspect_if_blacklisted(direction, context.dig_config.blacklist)
 end
 
 ---checks if block is valid and digs, returns boolean if something was dug, block data regardless of validity (maybe nil), reason for boolean result
@@ -64,9 +64,9 @@ function M.try_dig(direction, context) --> bool: is block is valid; table (block
 	local blacklist = context
 		and context.dig_config
 		and context.dig_config.blacklist
-	local block_not_blacklisted, block_data = inspect_validity(direction, blacklist)
+	local blacklisted, block_data = inspect_with_blacklist(direction, blacklist)
 
-	if block_not_blacklisted and block_data then
+	if not blacklisted and block_data then
 		if LIQUID_BLOCKS[block_data.name] then
 			return false, block_data, DIG_REASONS.LIQUID
 		end
@@ -81,7 +81,7 @@ function M.try_dig(direction, context) --> bool: is block is valid; table (block
 		else
 			return false, block_data, DIG_REASONS.DIG_FAILED
 		end
-	elseif block_not_blacklisted then	-- empty
+	elseif not blacklisted then	-- empty
 		return false, nil, DIG_REASONS.EMPTY
 	else
 		return false, block_data, DIG_REASONS.BLACKLISTED
@@ -90,7 +90,7 @@ end
 
 
 
------------- ITS A MESS DOWN THERE ---------------------------------
+----OUTDATED FUNCTIONS ----------------------------
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
 	local selected = M.selectItem("torch")
