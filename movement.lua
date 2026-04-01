@@ -1,5 +1,4 @@
 local dir = require("direction")
-local tt = require("turtletools")
 
 M = {}
 
@@ -9,6 +8,16 @@ local move_functions = {
     up = turtle.up,
     down = turtle.down,
 }
+local turn_functions = {
+    right = turtle.turnRight,
+    left = turtle.turnLeft
+}
+
+local function context_checker(context)
+    if type(context) ~= "table" then
+        error("invalid context: not a table", 3)
+    end
+end
 
 --[[
     NOTES:
@@ -31,9 +40,15 @@ local move_functions = {
 
         WARNING: INSPECTING DOES NOT WORK FOR BACK, TURNING AROUND AND INSPECTING IS COUNTER_INTUITIVE.
                     WE MUST ASSUME THERE IS NO BLOCK
+
+    TO DO:
+        -- 1 add turn functions to change facing
+    WORKING ON:
+        -- 1 add turn functions to change facing
+        -- 
 ]]
 -----------------------------------------------MOVEMENT----------------------------------------------------------------------------------------------
-local function move(direction, state)
+local function move(direction, state) --> boolean Whether the turtle could successfully move, string | nil The reason the turtle could not turn
     if type(state) ~= "table" then
         error("move: context.state is not a table", 2)
     end
@@ -59,43 +74,33 @@ local function move(direction, state)
         error("invalid direction: " .. '"' .. tostring(direction) .. '"', 2)
     end
 
-    state.fuel = state.fuel + 1
-    state.total_moves = state.stats.total_moves + 1
+    state.fuel = state.fuel - 1
+    state.stats.total_moves = state.stats.total_moves + 1
     return true, nil
 end
 
 function M.move(direction, context)
-    if type(context) ~= "table" then
-        error("invalid context: not a table", 2)
-    end
+    context_checker(context)
     return move(direction, context.state)
 end
 
 function M.forward(context)
-    if type(context) ~= "table" then
-        error("invalid context: not a table", 2)
-    end
+    context_checker(context)
     return move(dir.DIRECTIONS.FORWARD, context.state)
 end
 
 function M.back(context)
-    if type(context) ~= "table" then
-        error("invalid context: not a table", 2)
-    end
+    context_checker(context)
     return move(dir.DIRECTIONS.BACK, context.state)
 end
 
 function M.up(context)
-    if type(context) ~= "table" then
-        error("invalid context: not a table", 2)
-    end
+    context_checker(context)
     return move(dir.DIRECTIONS.UP, context.state)
 end
 
 function M.down(context)
-    if type(context) ~= "table" then
-        error("invalid context: not a table", 2)
-    end
+    context_checker(context)
     return move(dir.DIRECTIONS.DOWN, context.state)
 end
 ----------------------------------------------TURNING------------------------------------------------------------------------------------------------
