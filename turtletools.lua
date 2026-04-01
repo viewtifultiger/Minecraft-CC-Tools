@@ -21,12 +21,7 @@ local LIQUID_BLOCKS = {
 M.DIG_REASONS = DIG_REASONS
 
 -----------------------------------------------------------------------------
-M.turn_functions = {
-	left = movement.turnLeft,
-	right = movement.turnRight,
-}
------------------------------------------------------------------------------
-M.inspect_functions = {
+local inspect_functions = {
 	forward = turtle.inspect,
 	up = turtle.inspectUp,
 	down = turtle.inspectDown
@@ -37,7 +32,6 @@ local dig_functions = {
 	up = turtle.digUp,
 	down = turtle.digDown
 }
-
 ----------------LOCAL-FUNCTIONS------------------------------------------------------------------------------------------------------------------------
 local function record_mined_block(state, block_name)
 	local stats = state.stats
@@ -50,7 +44,7 @@ end
 ---checks block validity by refering to the blacklist from the context
 local function inspect_if_blacklisted(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
 	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block_is_present, block_data = M.inspect_functions[direction]()
+	local block_is_present, block_data = inspect_functions[direction]()
 
 	return blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
@@ -88,8 +82,6 @@ function M.try_dig(direction, context) --> bool: is block is valid; table (block
 	end
 end
 
-
-
 ----OUTDATED FUNCTIONS ----------------------------
 -- direction: place - turtle place direction
 local function _placeTorch(place) --> bool : torch placed
@@ -100,7 +92,6 @@ local function _placeTorch(place) --> bool : torch placed
 	place()
 	return selected
 end
-
 
 -- FUNCTIONS --
 function M.forward(int)
