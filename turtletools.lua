@@ -64,7 +64,7 @@ function M.try_dig(direction, context) --> bool: is block is valid; table (block
 	local blacklist = context
 		and context.dig_config
 		and context.dig_config.blacklist
-	local blacklisted, block_data = inspect_with_blacklist(direction, blacklist)
+	local blacklisted, block_data = inspect_if_blacklisted(direction, blacklist)
 
 	if not blacklisted and block_data then
 		if LIQUID_BLOCKS[block_data.name] then
