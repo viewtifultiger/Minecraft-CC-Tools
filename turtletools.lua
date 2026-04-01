@@ -226,7 +226,7 @@ end
 
 function M.returnToSurface(depth)
 	for i=1,depth do
-		turtle.up()
+		movement.up()
 	end
 end
 
