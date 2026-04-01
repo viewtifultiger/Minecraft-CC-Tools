@@ -10,13 +10,15 @@
 -- 4 create movement functions and have them receive a context
 -- 5 create a function that prints important stats
 -- consider changing inspect_validity to accept dig_options instead of a simple blacklist
--- 
+-- consider creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
 	-- Working on: 
-		create movement wrappers to add data to the context 
+		-- create turn functions within movement wrapper functions to change state.facing
+		-- refactor hole_2x2 to work with return values of movement.move()
+		-- consider changing return values of dig_2x2_square
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
@@ -37,7 +39,6 @@ local next_hole_direction = dig_config.next_hole_direction
 local dig_hole_down = horizontal_2x2.dig_hole_down
 local turn = tt.turn_functions[next_hole_direction]
 local opposite_turn = tt.turn_functions[next_hole_direction == "left" and "right" or "left"] -- consider moving horizontal_flip() in hole_2x2 elsewhere
-
 
 
 state.fuel = turtle.getFuelLevel()
@@ -75,7 +76,9 @@ for i=1,dig_config.iterations do
 end
 
 turn()
-tt.forward(3)
+movement.forward()
+movement.forward()
+movement.forward()
 
 print("Success:", success)
 print("Fuel Remaining:", turtle.getFuelLevel())
