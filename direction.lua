@@ -7,14 +7,6 @@ M.FACINGS = {
     SOUTH = "south",
     WEST = "west"
 }
-
-M.DIRECTIONS = {
-    FORWARD = "forward",
-    BACK = "back",
-    UP = "up",
-    DOWN = "down"
-}
-
 M.VALID_FACINGS = {
     north = true,
     east = true,
@@ -22,12 +14,41 @@ M.VALID_FACINGS = {
     west = true
 }
 
+M.DIRECTIONS = {
+    FORWARD = "forward",
+    BACK = "back",
+    UP = "up",
+    DOWN = "down"
+}
 M.VALID_DIRECTIONS = {
     forward = true,
     back = true,
     up = true,
     down = true
 }
+
+M.TURN_DIRECTIONS = {
+    LEFT = "left",
+    RIGHT = "right"
+}
+M.VALID_TURN_DIRECTIONS = {
+    left = true,
+    right = true
+}
+
+M.LEFT_TURN = {
+    north = "west",
+    west = "south",
+    south = "east",
+    east = "north"
+}
+M.RIGHT_TURN = {
+    north = "east",
+    east = "south",
+    south = "west",
+    west = "north"
+}
+
 
 M.VECTORS = {
     north = {x = 0, z = -1},
