@@ -55,7 +55,7 @@ local function inspect_if_blacklisted(direction, blacklist) --> bool: is block i
 	return blacklist[block_data.name], type(block_data) == "table" and block_data or nil
 end
 ----------------MAIN-FUNCTIONS-------------------------------------------------------------------------------------------------------------------------
-function M.inspect_validity(direction, context)
+function M.inspect_if_blacklisted(direction, context)
 	return inspect_if_blacklisted(direction, context.dig_config.blacklist)
 end
 
