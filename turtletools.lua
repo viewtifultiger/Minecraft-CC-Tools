@@ -224,9 +224,9 @@ function M.cleanInventory(overrides)
 	turtle.select(1)
 end
 
-function M.returnToSurface(depth)
+function M.returnToSurface(depth, context)
 	for i=1,depth do
-		movement.up()
+		movement.up(context)
 	end
 end
 
