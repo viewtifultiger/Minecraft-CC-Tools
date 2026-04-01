@@ -2,6 +2,7 @@
 
 ]]
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
+local movement = require("movement")
 
 local M = {}
 
@@ -21,8 +22,8 @@ M.DIG_REASONS = DIG_REASONS
 
 -----------------------------------------------------------------------------
 M.turn_functions = {
-	left = turtle.turnLeft,
-	right = turtle.turnRight,
+	left = movement.turnLeft,
+	right = movement.turnRight,
 }
 -----------------------------------------------------------------------------
 M.inspect_functions = {
