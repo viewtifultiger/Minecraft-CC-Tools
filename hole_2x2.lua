@@ -39,8 +39,6 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
 	local forward = movement.forward
-	local turn = tt.turn_functions[start_mining_towards]
-	local opposite_turn = tt.turn_functions[flip_horizontal_direction(start_mining_towards)]
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.horizontal_position = flip_horizontal_direction(start_mining_towards)
 	-------------LOCALS----------------------------------------------------------------------------
@@ -49,10 +47,10 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	
 	dug, block_data, reason = try_dig("forward", context)
 	if STOP_REASONS[reason] then	-- found an invalid block
-		return false, context, reason
+		return false, reason, context
 	end
 
-	turn(context)
+	movement.turn(start_mining_towards, context)
 
 	dug, block_data, reason = try_dig("forward", context)
 	if STOP_REASONS[reason] then	-- found an invalid block
@@ -63,7 +61,7 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	-- horizontal movement
 	forward(context)
 	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
-	opposite_turn(context)
+	movement.turn_opposite(start_mining_towards, context)
 
 	dug, block_data, reason = try_dig("forward", context)
 	if STOP_REASONS[reason] then	-- found an invalid block
@@ -108,15 +106,19 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 		end
 		------------------------MAIN DIG LOOP------------------------------------------------------
 		dug, block_data, reason = try_dig("down", context)
-		if STOP_REASONS[reason] then
+		if not dug then
+			return false, reason
+		elseif STOP_REASONS[reason] then
 			break
 		end
 
 		down(context)
 		state.depth = state.depth + 1
 
-		success, _, reason = dig_square(start_mining_towards, context)
-		if STOP_REASONS[reason] then
+		success, reason = dig_square(start_mining_towards, context)
+		if not success then
+			return false, reason
+		elseif STOP_REASONS[reason] then
 			break
 		end
 
@@ -124,7 +126,7 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 		-------------------------------------------------------------------------------------------
 	end
 	tt.cleanInventory()
-	tt.returnToSurface(state.depth)
+	tt.returnToSurface(state.depth, context)
 	return true, context
 end
 
