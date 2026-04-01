@@ -16,12 +16,11 @@ local M = {}
 	-- WORKING ON --
 	
 ]]
----------------------------------------------------------------------
+---------------------HELPERS------------------------------------------
 local STOP_REASONS = {
 	[DIG_REASONS.BLACKLISTED] = true,
 	[DIG_REASONS.DIG_FAILED] = true
 }
----------------------------------------------------------------------
 local function flip_horizontal_direction(direction)
 	return direction == "left" and "right" or "left"
 end
@@ -37,10 +36,9 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	-------------TABLES----------------------------------------------------------------------------
 	context = context or context_builder.create()
 	local state = context.state
-	local dig_config = context.dig_config
-	local blacklist = dig_config.blacklist
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
+	local forward = movement.forward
 	local turn = tt.turn_functions[start_mining_towards]
 	local opposite_turn = tt.turn_functions[flip_horizontal_direction(start_mining_towards)]
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
@@ -54,18 +52,18 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 		return false, context, reason
 	end
 
-	turn()
+	turn(context)
 
 	dug, block_data, reason = try_dig("forward", context)
 	if STOP_REASONS[reason] then	-- found an invalid block
-		opposite_turn()
+		opposite_turn(context)
 		return false, context, reason
 	end
 
 	-- horizontal movement
-	movement.move("forward", context)
+	forward(context)
 	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
-	opposite_turn()
+	opposite_turn(context)
 
 	dug, block_data, reason = try_dig("forward", context)
 	if STOP_REASONS[reason] then	-- found an invalid block
@@ -91,6 +89,7 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
 	local dig_square = dig_2x2_square
+	local down = movement.down
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.depth = 0
 	-------------LOCALS----------------------------------------------------------------------------
@@ -113,7 +112,7 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 			break
 		end
 
-		movement.move("down", context)
+		down(context)
 		state.depth = state.depth + 1
 
 		success, _, reason = dig_square(start_mining_towards, context)
