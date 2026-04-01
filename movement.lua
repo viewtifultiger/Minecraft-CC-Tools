@@ -9,10 +9,9 @@ local move_functions = {
     down = turtle.down,
 }
 local turn_functions = {
-    right = turtle.turnRight,
-    left = turtle.turnLeft
+    left = turtle.turnLeft,
+    right = turtle.turnRight
 }
-
 local function context_checker(context)
     if type(context) ~= "table" then
         error("invalid context: not a table", 3)
@@ -119,6 +118,10 @@ end
 function M.turn(direction, context)
     context_checker(context)
     return turn(direction, context.state)
+end
+function M.turn_opposite(direction, context)
+    context_checker(context)
+    return turn((direction == "left" and "right" or "left"), context.state)
 end
 function M.turnLeft(context)
     context_checker(context)
