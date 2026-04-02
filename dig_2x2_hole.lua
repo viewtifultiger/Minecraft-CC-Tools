@@ -11,6 +11,9 @@
 -- consider creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
 -- consider creating your own turtle module
 -- refactor error throw level on dig_square when calling fromm dig_hole_down
+-- reconsider the return values of try_dig (succes, block data, and reason)
+-- consider modifying the DIG_REASONS strings
+-- do more testing on the turtle position
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
@@ -28,12 +31,13 @@ local state = context.state
 local dig_config = context.dig_config
 ----------------------------------------------
 dig_config.next_hole_direction = "left"
+state.facing = "east"
 ------------VARIABLES-------------------------
 local starting_fuel = state.fuel
 ------------FUNCITONS-------------------------
 
 print("Fuel Level: ", starting_fuel)
-state.position = {x = 93, y = 95, z = 75}
+state.position = {x = 93, y = 95, z = 73}
 dig_config.iterations = 1
 
 -- 3 moves per level (going down/going up/sidemovement) * number of levels (current + 63 below y=0 + 2 for moving to next iteration) * total iterations 
@@ -51,6 +55,7 @@ for i=1,dig_config.iterations do
 	success = horizontal_2x2.dig_hole_down(dig_config.next_hole_direction, context)
 	movement.turn(dig_config.next_hole_direction, context)
 
+	-- reposition turtle on the next hole location
 	if state.horizontal_position == dig_config.next_hole_direction then
 		movement.forward(context)
 	else
@@ -63,9 +68,9 @@ for i=1,dig_config.iterations do
 	end
 end
 
-movement.turn(dig_config.next_direction)
+movement.turn(dig_config.next_hole_direction, context)
 
-for i=1, 3 do movement.forward() end
+for i=1, 3 do movement.forward(context) end
 
 print("Success:", success)
 print("Total Blocks Mined: ", state.stats.blocks_mined)
