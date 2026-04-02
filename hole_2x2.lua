@@ -44,7 +44,7 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	-------------LOCALS----------------------------------------------------------------------------
 	local dug, block_data, reason
 	-----------------------------------------------------------------------------------------------
-	
+
 	dug, block_data, reason = try_dig("forward", context)
 	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		return false, reason, context
@@ -106,25 +106,26 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 		end
 		------------------------MAIN DIG LOOP------------------------------------------------------
 		dug, block_data, reason = try_dig("down", context)
-		if not dug then
-			return false, reason
-		elseif STOP_REASONS[reason] then
+		if STOP_REASONS[reason] then
 			break
 		end
 
 		down(context)
-		state.depth = state.depth + 1
 
 		success, reason = dig_square(start_mining_towards, context)
-		if not success then
-			return false, reason
-		elseif STOP_REASONS[reason] then
+		if STOP_REASONS[reason] then
 			break
 		end
 
 		start_mining_towards = flip_horizontal_direction(start_mining_towards)
 		-------------------------------------------------------------------------------------------
 	end
+
+	if reason == DIG_REASONS.DIG_FAILED then
+		error("DIGGING FAILED: " .. reason, 2)
+		return false, context
+	end
+
 	tt.cleanInventory()
 	tt.returnToSurface(state.depth, context)
 	return true, context
