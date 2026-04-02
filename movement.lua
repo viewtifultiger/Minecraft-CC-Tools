@@ -53,6 +53,7 @@ local function move(direction, state) --> boolean Whether the turtle could succe
             return false, reason
         elseif direction == directions.UP or direction == directions.DOWN then
             position.y = position.y + vectors[direction].y
+            state.depth = state.depth + (-1 * vectors[direction].y)
         elseif dir.VALID_FACINGS[state.facing] then
             position.x = position.x + (direction == directions.FORWARD and vectors[state.facing].x or -1 * (vectors[state.facing].x))
             position.z = position.z + (direction == directions.FORWARD and vectors[state.facing].z or -1 * (vectors[state.facing].z))
