@@ -46,14 +46,14 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	-----------------------------------------------------------------------------------------------
 	
 	dug, block_data, reason = try_dig("forward", context)
-	if STOP_REASONS[reason] then	-- found an invalid block
+	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		return false, reason, context
 	end
 
 	movement.turn(start_mining_towards, context)
 
 	dug, block_data, reason = try_dig("forward", context)
-	if STOP_REASONS[reason] then	-- found an invalid block
+	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		movement.turn_opposite(start_mining_towards, context)
 		return false, reason, context
 	end
@@ -64,11 +64,11 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	movement.turn_opposite(start_mining_towards, context)
 
 	dug, block_data, reason = try_dig("forward", context)
-	if STOP_REASONS[reason] then	-- found an invalid block
+	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		return false, reason, context
 	end
 
-	return true, reason, context
+	return true, nil, context
 end
 function M.dig_2x2_square(start_mining_towards, context)
 	return dig_2x2_square(start_mining_towards, context)
