@@ -35,7 +35,16 @@ M.VALID_TURN_DIRECTIONS = {
     left = true,
     right = true
 }
-
+M.VERTICAL_DIRECTIONS = {
+    FORWARD = "forward",
+    UP = "up",
+    DOWN = "down"
+}
+M.VALID_VERTICAL_DIRECTIONS = {
+    forward = true,
+    up = true,
+    down = true
+}
 M.LEFT_TURN = {
     north = "west",
     west = "south",
@@ -48,8 +57,6 @@ M.RIGHT_TURN = {
     south = "west",
     west = "north"
 }
-
-
 M.VECTORS = {
     north = {x = 0, z = -1},
     east = {x = 1, z = 0},
