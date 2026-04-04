@@ -13,13 +13,13 @@ M.VALID_FACINGS = {
     south = true,
     west = true
 }
-M.DIRECTIONS = {
+M.MOVEMENT_DIRECTIONS = {
     FORWARD = "forward",
     BACK = "back",
     UP = "up",
     DOWN = "down"
 }
-M.VALID_DIRECTIONS = {
+M.VALID_MOVEMENT_DIRECTIONS = {
     forward = true,
     back = true,
     up = true,
@@ -64,14 +64,24 @@ M.VECTORS = {
     down = {y = -1}
 }
 
-function M.vertical_direction_checker(direction, level)
+function M.validate_movement_direction(direction, level)
+    if not M.VALID_MOVEMENT_DIRECTIONS[direction] then
+        error('invalid movement direction, expected "forward", "back", "up", or "down"; received "' .. tostring(direction) .. '"', level or 2)
+    end
+end
+function M.validate_vertical_direction(direction, level)
     if not M.VALID_VERTICAL_DIRECTIONS[direction] then
         error('invalid dig direction, expected "forward", "up", or "down"; received "' .. tostring(direction) .. '"', level or 2)
     end
 end
-function M.turn_direction_checker(direction, level)
+function M.validate_turn_direction(direction, level)
     if not M.VALID_TURN_DIRECTIONS[direction] then
         error('invalid turn direction, expected "left" or "right"; received "' .. tostring(direction) .. '"', level or 2)
+    end
+end
+function M.validate_facing(facing, level)
+    if not M.VALID_FACINGS[facing] then
+        error('invalid facing, expected "north", "east", "south" or "west"; received "' .. tostring(facing) .. '"', level or 2)
     end
 end
 
