@@ -19,6 +19,7 @@ local turn_functions = {
         -- When the turtle moves:
             -- changes state.position by 1 (x, y, or z)
             -- reduce state.fuel by 1
+            -- depth (up or down movement)
             --------------------------------
             -- changes stats.total_moves  
         x and z position changes
@@ -76,43 +77,32 @@ function M.down(context)
 end
 ----------------------------------------------TURNING------------------------------------------------------------------------------------------------
 --[[
+-- When turtle turns:
+    -- change state.facing direction
 ]]
 local function turn(direction, state) --> boolean Whether the turtle could succesfully turn, string | nil The reason the turtle could not turn
-    --[[
-    -- When turtle turns:
-        -- change state.facing direction
-    ]]
-    if direct.VALID_TURN_DIRECTIONS[direction] then
-        local success, reason = turn_functions[direction]()
-        if not success then
-            return false, reason
-        elseif direct.VALID_FACINGS[state.facing] then
-            state.facing =
-            ((direction == direct.TURN_DIRECTIONS.LEFT) and direct.LEFT_TURN[state.facing]) or direct.RIGHT_TURN[state.facing]
-        else
-            error("invalid state.facing: " .. "'" .. tostring(state.facing) .. '"', 2)
-        end
+    local success, reason = turn_functions[direction]()
+    if not success then
+        return false, reason
     else
-        error("invalid direction: " .. '"' .. tostring(direction) .. '"', 2)
+        state.facing =
+        ((direction == direct.TURN_DIRECTIONS.LEFT) and direct.LEFT_TURN[state.facing]) or direct.RIGHT_TURN[state.facing]
     end
     return true, nil
 end
 function M.turn(direction, context)
-    context_checker(context)
+    direct.validate_turn_direction(direction)
+    context_builder.run_checks(context, {"state", "facing"}, 3)
     return turn(direction, context.state)
 end
 function M.turn_opposite(direction, context)
-    context_checker(context)
-    return turn((direction == "left" and "right" or "left"), context.state)
+    return M.turn((direction == "left" and "right" or "left"), context.state)
 end
 function M.turnLeft(context)
-    context_checker(context)
-    return turn(direct.TURN_DIRECTIONS.LEFT, context.state)
+    return M.turn(direct.TURN_DIRECTIONS.LEFT, context)
 end
 function M.turnRight(context)
-    context_checker(context)
-    return turn(direct.TURN_DIRECTIONS.RIGHT, context.state)
+    return M.turn(direct.TURN_DIRECTIONS.RIGHT, context)
 end
-
 
 return M
