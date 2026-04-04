@@ -13,14 +13,13 @@
 -- 6 create a hole_2x2.dig_hole_up() -- instead of returning the turtle after reaching bedrock, make the turtle dig a hole from bottom to top
 -- update the turtle tools and investigate the code tools
 -- 7 create a function that prints important stats
--- 11 add a blacklist key checker (maybe even values) to check to see if the form of the table matches a blacklist
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
 	-- Working on: 
-		-- add value checkers to all functions: done so far - (inspect_if_blacklisted, try_dig)
-		-- move the core try_dig: make sure to chance access from dig_2x2_square and dig_hole_down to dig_core functions instead of turtletools
+		-- check movement functions with new checkers added
+		-- remove error checks in the local move function
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
