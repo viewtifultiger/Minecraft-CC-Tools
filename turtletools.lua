@@ -2,85 +2,59 @@
 
 ]]
 local DEFAULT_BLACKLIST = require("_black_list_blocks")
+local context_builder = require("context_builder")
+local dig_core = require("dig_core")
+
 local movement = require("movement")
+local direct = require("direction")
 
 local M = {}
 
-local DIG_REASONS = {
-	DUG = "dug",
-	EMPTY = "empty",
-	BLACKLISTED = "blacklisted",
-	DIG_FAILED = "dig failed",
-	LIQUID = "liquid",
-}
-local LIQUID_BLOCKS = {
-	["minecraft:water"] = true,
-	["minecraft:lava"] = true
-}
+----------------PUBLIC-FUNCTIONS-----------------------------------------------------------------------------------------------------------------------
+--[[
+	vertical_direction string (must be "forward", "up", or "down"): ; context table: context_builder.create() or similar and must have a blacklist
 
-M.DIG_REASONS = DIG_REASONS
+	WARNING: NEEDS A VALIDATE_BLACKLIST FUNCTION OR ELSE ANY TABLE WILL PASS (can check for proper keys and type(values) == "boolean"
+]]
+function M.inspect_if_blacklisted(vertical_direction, context) --> --> success boolean: if block present and not blacklisted; table block_data | nil (empty block)
+	direct.vertical_direction_checker(vertical_direction, 3)
+	context = context or context_builder.create()
+	context_builder.run_checks(context, {"dig_config", "blacklist"}, 3)
+	--!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	return dig_core.inspect_if_blacklisted(vertical_direction, context.dig_config.blacklist)
+end
+--[[
+	vertical_direction string (must be "forward", "up", or "down"): ; context table: context_builder.create() or similar and must have a blacklist 
+		and must have stats
 
------------------------------------------------------------------------------
-local inspect_functions = {
-	forward = turtle.inspect,
-	up = turtle.inspectUp,
-	down = turtle.inspectDown
-}
------------------------------------------------------------------------------
-local dig_functions = {
-	forward = turtle.dig,
-	up = turtle.digUp,
-	down = turtle.digDown
-}
-----------------LOCAL-FUNCTIONS------------------------------------------------------------------------------------------------------------------------
-local function record_mined_block(state, block_name)
-	local stats = state.stats
-	stats.blocks_mined_by_name[block_name] =
-		(stats.blocks_mined_by_name[block_name] or 0) + 1
-	stats.blocks_mined = stats.blocks_mined + 1
-
+	WARNING: NEEDS A VALIDATE_BLACKLIST FUNCTION OR ELSE ANY TABLE WILL PASS (can check for proper keys and type(values) == "boolean"
+]]
+function M.try_dig(vertical_direction, context) --> boolean: if block was dug; table | nil (if empty block); string reason for the returned boolean
+	direct.vertical_direction_checker(vertical_direction, 3)
+	context = context
+	context_builder.run_checks(context, {"basic_structure", "stats", "blocks_mined",
+											"blocks_mined_by_name", "blacklist"}, 3) --check state, dig_config, blacklist, stats, blocks_mined, blocks_mined by name
+	--!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	return dig_core.try_dig(vertical_direction, context)
 end
 
----checks block validity by refering to the blacklist from the context
-local function inspect_if_blacklisted(direction, blacklist) --> bool: is block is valid; table (block data): nil if no block data
-	blacklist = blacklist or DEFAULT_BLACKLIST
-	local block_is_present, block_data = inspect_functions[direction]()
 
-	return blacklist[block_data.name], type(block_data) == "table" and block_data or nil
-end
-----------------MAIN-FUNCTIONS-------------------------------------------------------------------------------------------------------------------------
-function M.inspect_if_blacklisted(direction, context)
-	return inspect_if_blacklisted(direction, context.dig_config.blacklist)
-end
+----------------SANDBOX-FUNCTIONS----------------------------------------------------------------------------------------------------------------------
+--[[ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!THIS FUNCTION NEEDS TO BE PROPERLY IMPLEMENTED OR REFACTORED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	vertical_direction string (must be "forward", "up", or "down"): ; blacklist table
 
----checks if block is valid and digs, returns boolean if something was dug, block data regardless of validity (maybe nil), reason for boolean result
-function M.try_dig(direction, context) --> bool: is block is valid; table (block data): nil if no block data; string dig reason
-	local blacklist = context
-		and context.dig_config
-		and context.dig_config.blacklist
-	local blacklisted, block_data = inspect_if_blacklisted(direction, blacklist)
+	WARNING: NEEDS A VALIDATE_BLACKLIST FUNCTION OR ELSE ANY TABLE WILL PASS (can check for proper keys and type(values) == "boolean"
+]]
+-- function M.inspect_if_blacklisted_with_blacklist(vertical_direction, blacklist) --> success boolean: if block present and not blacklisted; table block_data | nil (empty block)
+-- 	direct.vertical_direction_checker(vertical_direction, 3)
+-- 	blacklist = blacklist or DEFAULT_BLACKLIST
+-- 	context_builder.blacklist_checker(blacklist, 3)	--!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-- 	return dig_core.inspect_if_blacklisted(vertical_direction, blacklist)
+-- end
 
-	if not blacklisted and block_data then
-		if LIQUID_BLOCKS[block_data.name] then
-			return false, block_data, DIG_REASONS.LIQUID
-		end
 
-		local success, err = dig_functions[direction]()
 
-		if success then -- block is valid, block has data, something was dug
-			if context then
-				record_mined_block(context.state, block_data.name)
-			end
-			return true, block_data, DIG_REASONS.DUG
-		else
-			return false, block_data, DIG_REASONS.DIG_FAILED
-		end
-	elseif not blacklisted then	-- empty
-		return false, nil, DIG_REASONS.EMPTY
-	else
-		return false, block_data, DIG_REASONS.BLACKLISTED
-	end
-end
+
 
 ----OUTDATED FUNCTIONS ----------------------------
 -- direction: place - turtle place direction
