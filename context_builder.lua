@@ -40,6 +40,12 @@ local function fuel_checker(context, level)
         error('context missing state.fuel; "' .. tostring(fuel) .. '" is not a number', level or 2)
     end
 end
+local function depth_checker(context, level)
+    local depth = context.state.depth
+    if type(depth) ~= "number" then
+        error('context missing state.depth; "' .. tostring(depth) .. '" is not a number', level or 2)
+    end
+end
 local function position_checker(context, level)
     local position = context.state.position
     if type(position) ~= "table" then
@@ -106,6 +112,7 @@ local CHECKS = {
     ["state"] = state_checker,
     ["facing"]= facing_checker,
     ["fuel"] = fuel_checker,
+    ["depth"] = depth_checker,
     ["position"] = position_checker,
     ["position_x"] = position_x_checker,
     ["position_y"] = position_y_checker,
