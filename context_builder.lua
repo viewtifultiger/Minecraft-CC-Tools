@@ -82,12 +82,6 @@ local function total_moves_checker(context, level)
         error('state missing stats.total_moves; "' .. tostring(total_moves) .. '" is not a number', level or 2)
     end
 end
--------------------DIG_CONFIG-------------------------------------------------
-local function dig_config_checker(context, level)
-	if type(context.dig_config) ~= "table" then
-		error('missing context.dig_config; "' .. tostring(context.dig_config) .. '" is not a table', level or 2)
-	end
-end
 local function blocks_mined_checker(context, level)
     local blocks_mined = context.state.stats.blocks_mined
     if type(blocks_mined) ~= "number" then
@@ -99,6 +93,12 @@ local function blocks_mined_by_name_checker(context, level)
     if type(blocks_mined_by_name) ~= "table" then
         error('context missing stats.blocks_mined_by_name; "' .. tostring(blocks_mined_by_name) .. '" is not a table', level or 2)
     end
+end
+-------------------DIG_CONFIG-------------------------------------------------
+local function dig_config_checker(context, level)
+	if type(context.dig_config) ~= "table" then
+		error('missing context.dig_config; "' .. tostring(context.dig_config) .. '" is not a table', level or 2)
+	end
 end
 local function blacklist_checker(tabl, level)
     local context_blacklist = tabl.dig_config.blacklist
