@@ -71,7 +71,7 @@ end
 --[[
 ]]
 function M.dig_2x2_square(start_mining_towards, context)
-	direct.turn_direction_checker(start_mining_towards, 3)
+	direct.validate_turn_direction(start_mining_towards, 3)
 	context = context or context_builder.create()
 	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
 										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
@@ -134,7 +134,7 @@ local function dig_hole_down(start_mining_towards, context) --> success boolean;
 	return true, context
 end
 function M.dig_hole_down(start_mining_towards, context)
-	direct.turn_direction_checker(start_mining_towards, 3)
+	direct.validate_turn_direction(start_mining_towards, 3)
 	context = context or context_builder.create()
 	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
 										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
