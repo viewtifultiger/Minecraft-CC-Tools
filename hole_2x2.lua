@@ -30,8 +30,11 @@ end
 	--@param direction_to_mine string "left" | "right"
 	---@param context context_builder
 ]]
--------------------------------------------------------------------------------------------------------------------------------------------------------
-local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle_state; state changes: horizontal_position, blocks_mined, blocks_mined_by_name
+----------------------------------------------------------------------------
+--- ASSUMING THESE ARE VALIDATED: start_mining_towards, context, context.state
+--- "basic_structure", "stats", "blocks_mined", "blocks_mined_by_name", "blacklist"
+------------------------------------------------------------------------------
+local function dig_2x2_square(start_mining_towards, context) --> boolean: if square was completed; string: reason why the square failed; table context
 	-------------TABLES----------------------------------------------------------------------------
 	local state = context.state
 	------------FUNCTIONS--------------------------------------------------------------------------
@@ -65,18 +68,14 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle
 	end
 	return true, nil, context
 end
-
 --[[
-	WARNING: context_builder.context_blacklist_checker only checks if the blacklist is a table. Proper key and value checks would be necessary
-				to warn the user of an improper blacklist. For full customizability.. we may allow this if the user wants to continue. Possibly
-				check for a CUSTOM_BLACKLIST = true within the blacklist or permanently append (or advise to append) it for the user if the user 
-				agrees to use their current blacklist
 ]]
 function M.dig_2x2_square(start_mining_towards, context)
 	direct.turn_direction_checker(start_mining_towards, 3)
 	context = context or context_builder.create()
-	context_builder.context_checker(context, 3)
-	context_builder.context_blacklist_checker(context, 3) --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
+										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
+										"blacklist"}, 3)
 	return dig_2x2_square(start_mining_towards, context)
 end
 
@@ -91,7 +90,6 @@ local function dig_hole_down(start_mining_towards, context) --> success boolean;
 	local dig_config = context.dig_config
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
-	try_dig("up")
 	local dig_square = dig_2x2_square
 	local down = movement.down
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
@@ -138,8 +136,9 @@ end
 function M.dig_hole_down(start_mining_towards, context)
 	direct.turn_direction_checker(start_mining_towards, 3)
 	context = context or context_builder.create()
-	context_builder.context_checker(context, 3)
-	context_builder.context_blacklist_checker(context, 3) --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
+										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
+										"blacklist"}, 3)
 	return dig_hole_down(start_mining_towards, context)
 end
 
