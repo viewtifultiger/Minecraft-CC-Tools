@@ -73,9 +73,8 @@ end
 function M.dig_2x2_square(start_mining_towards, context)
 	direct.validate_turn_direction(start_mining_towards, 3)
 	context = context or context_builder.create()
-	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
-										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
-										"blacklist"}, 3)
+	context_builder.run_checks(context, {"basic_movement", "facing", "position_x",
+										"position_z", "dig_config", "blocks_mined", "blocks_mined_by_name", "blacklist"}, 3)
 	return dig_2x2_square(start_mining_towards, context)
 end
 
@@ -136,9 +135,7 @@ end
 function M.dig_hole_down(start_mining_towards, context)
 	direct.validate_turn_direction(start_mining_towards, 3)
 	context = context or context_builder.create()
-	context_builder.run_checks(context, {"basic_structure", "facing", "fuel", "position", "position_x",
-										"position_z", "stats", "total_moves", "blocks_mined", "blocks_mined_by_name",
-										"blacklist"}, 3)
+	context_builder.run_checks(context, {"full_movement", "dig_config", "blocks_mined", "blocks_mined_by_name", "blacklist"}, 3)
 	return dig_hole_down(start_mining_towards, context)
 end
 

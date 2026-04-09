@@ -14,14 +14,6 @@ end
 --[[
     NOTES:
 ]]
-local function basic_structure_checker(context, level)
-	if type(context.state) ~= "table" then
-		error('missing context.state; "' .. tostring(context.state) .. '" is not a table', level or 2)
-	end
-	if type(context.dig_config) ~= "table" then
-		error('missing context.dig_config; "' .. tostring(context.dig_config) .. '" is not a table', level or 2)
-	end
-end
 --------------------STATE----------------------------------------------------
 local function state_checker(context, level)
 	if type(context.state) ~= "table" then
@@ -106,9 +98,40 @@ local function blacklist_checker(tabl, level)
         error('context missing dig_config.blacklist; "' .. tostring(context_blacklist) .. '" is not a table', level or 2 )
     end
 end
+------------------------------------------------------------------------------
+local function basic_structure_checker(context, level)
+	state_checker(context, level)
+	dig_config_checker(context, level)
+end
+
+-- facing, position_x, position_z
+-- depth, "position_y"
+
+local function basic_movement_checker(context, level)
+    state_checker(context, level)
+    fuel_checker(context, level)
+    position_checker(context, level)
+    stats_checker(context, level)
+    total_moves_checker(context, level)
+end
+
+local function full_movement_checker(context, level)
+    state_checker(context, level)
+    facing_checker(context, level)
+    fuel_checker(context, level)
+    depth_checker(context, level)
+    position_checker(context, level)
+    position_x_checker(context, level)
+    position_y_checker(context, level)
+    position_z_checker(context, level)
+    stats_checker(context, level)
+    total_moves_checker(context, level)
+end
 
 local CHECKS = {
     ["basic_structure"] = basic_structure_checker,
+    ["basic_movement"] = basic_movement_checker,
+    ["full_movement"] = full_movement_checker,
     ["state"] = state_checker,
     ["facing"]= facing_checker,
     ["fuel"] = fuel_checker,

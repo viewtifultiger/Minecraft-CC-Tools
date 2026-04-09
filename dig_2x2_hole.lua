@@ -13,7 +13,8 @@
 -- 6 create a hole_2x2.dig_hole_up() -- instead of returning the turtle after reaching bedrock, make the turtle dig a hole from bottom to top
 -- update the turtle tools and investigate the code tools
 -- 7 create a function that prints important stats
-
+-- consider finding a way to use context_builder.run_checks without worrying about the order of the check strings
+-- find a way to skip checks when using the public move function
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
