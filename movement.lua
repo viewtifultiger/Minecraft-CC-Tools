@@ -28,9 +28,8 @@ M = {}
 -----------------------------------------------MOVEMENT----------------------------------------------------------------------------------------------
 function M.move(direction, context)
     direct.validate_movement_direction(direction, 3)
-    context_builder.run_checks(context, {"state", "facing", "fuel", "depth", "position", "position_x",
-                                        "position_y", "position_z", "stats", "total_moves"}, 3)
-    direct.validate_facing(context.state.facing, 3)
+    context_builder.run_checks(context, {"full_movement"}, 3)
+    direct.validate_facing_direction(context.state.facing, 3)
     return movement_core.move(direction, context.state)
 end
 function M.forward(context)

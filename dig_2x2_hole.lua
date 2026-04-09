@@ -19,7 +19,7 @@
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
 	-- Working on:
-	-- check the dig_2x2_hole script to see if any new features should be added before creating a hole_2x2.dig_hole_up()
+	-- update functions to use movment_core
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
