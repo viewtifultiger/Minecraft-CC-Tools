@@ -83,7 +83,7 @@ function M.validate_turn_direction(direction, level)
         error('invalid turn direction, expected "left" or "right"; received "' .. tostring(direction) .. '"', level or 2)
     end
 end
-function M.validate_facing(facing, level)
+function M.validate_facing_direction(facing, level)
     if not M.VALID_FACINGS[facing] then
         error('invalid facing, expected "north", "east", "south" or "west"; received "' .. tostring(facing) .. '"', level or 2)
     end
