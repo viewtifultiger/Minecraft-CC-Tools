@@ -33,6 +33,10 @@ M.VALID_TURN_DIRECTIONS = {
     left = true,
     right = true
 }
+M.OPPOSITE_TURN_DIRECTIONS = {
+    [M.TURN_DIRECTIONS.LEFT] = "right",
+    [M.TURN_DIRECTIONS.RIGHT] = "left"
+}
 M.VERTICAL_DIRECTIONS = {
     FORWARD = "forward",
     UP = "up",

@@ -1,18 +1,10 @@
 local context_builder = require("context_builder")
 local direct = require("direction")
+local movement_core = require("movement_core")
 
+---@class MovementModule
 M = {}
 
-local move_functions = {
-    forward = turtle.forward,
-    back = turtle.back,
-    up = turtle.up,
-    down = turtle.down,
-}
-local turn_functions = {
-    left = turtle.turnLeft,
-    right = turtle.turnRight
-}
 
 --[[
     NOTES:
@@ -34,34 +26,12 @@ local turn_functions = {
 
 ]]
 -----------------------------------------------MOVEMENT----------------------------------------------------------------------------------------------
-local function move(direction, state) --> boolean Whether the turtle could successfully move, string | nil The reason the turtle could not turn
-    local movement = move_functions[direction]
-    local position = state.position
-    local vectors = direct.VECTORS
-    local directions = direct.MOVEMENT_DIRECTIONS
-    local success, reason = movement()
-
-    if not success then
-        return false, reason
-    elseif direction == directions.UP or direction == directions.DOWN then
-        position.y = position.y + vectors[direction].y
-        state.depth = state.depth + (-1 * vectors[direction].y)
-    else
-        position.x = position.x + (direction == directions.FORWARD and vectors[state.facing].x or -1 * (vectors[state.facing].x))
-        position.z = position.z + (direction == directions.FORWARD and vectors[state.facing].z or -1 * (vectors[state.facing].z))
-    end
-
-    state.fuel = state.fuel - 1
-    state.stats.total_moves = state.stats.total_moves + 1
-    return true, nil
-end
-
 function M.move(direction, context)
     direct.validate_movement_direction(direction, 3)
     context_builder.run_checks(context, {"state", "facing", "fuel", "depth", "position", "position_x",
                                         "position_y", "position_z", "stats", "total_moves"}, 3)
     direct.validate_facing(context.state.facing, 3)
-    return move(direction, context.state)
+    return movement_core.move(direction, context.state)
 end
 function M.forward(context)
     return M.move(direct.MOVEMENT_DIRECTIONS.FORWARD, context)
@@ -80,28 +50,20 @@ end
 -- When turtle turns:
     -- change state.facing direction
 ]]
-local function turn(direction, state) --> boolean Whether the turtle could succesfully turn, string | nil The reason the turtle could not turn
-    local success, reason = turn_functions[direction]()
-    if not success then
-        return false, reason
-    else
-        state.facing =
-        ((direction == direct.TURN_DIRECTIONS.LEFT) and direct.LEFT_TURN[state.facing]) or direct.RIGHT_TURN[state.facing]
-    end
-    return true, nil
-end
+
 function M.turn(direction, context)
-    direct.validate_turn_direction(direction)
+    direct.validate_turn_direction(direction, 3)
     context_builder.run_checks(context, {"state", "facing"}, 3)
-    return turn(direction, context.state)
+    return movement_core.turn(direction, context.state)
 end
 function M.turn_opposite(direction, context)
-    return M.turn((direction == "left" and "right" or "left"), context.state)
+    direct.validate_turn_direction(direction, 3)
+    return M.turn(direct.OPPOSITE_TURN_DIRECTIONS[direction], context)
 end
-function M.turnLeft(context)
+function M.turn_left(context)
     return M.turn(direct.TURN_DIRECTIONS.LEFT, context)
 end
-function M.turnRight(context)
+function M.turn_right(context)
     return M.turn(direct.TURN_DIRECTIONS.RIGHT, context)
 end
 
