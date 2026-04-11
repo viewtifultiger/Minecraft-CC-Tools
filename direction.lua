@@ -1,5 +1,5 @@
 
-M = {}
+local M = {}
 
 M.FACINGS = {
     NORTH = "north",
@@ -13,20 +13,18 @@ M.VALID_FACINGS = {
     south = true,
     west = true
 }
-
-M.DIRECTIONS = {
+M.MOVEMENT_DIRECTIONS = {
     FORWARD = "forward",
     BACK = "back",
     UP = "up",
     DOWN = "down"
 }
-M.VALID_DIRECTIONS = {
+M.VALID_MOVEMENT_DIRECTIONS = {
     forward = true,
     back = true,
     up = true,
     down = true
 }
-
 M.TURN_DIRECTIONS = {
     LEFT = "left",
     RIGHT = "right"
@@ -35,7 +33,20 @@ M.VALID_TURN_DIRECTIONS = {
     left = true,
     right = true
 }
-
+M.OPPOSITE_TURN_DIRECTIONS = {
+    [M.TURN_DIRECTIONS.LEFT] = "right",
+    [M.TURN_DIRECTIONS.RIGHT] = "left"
+}
+M.VERTICAL_DIRECTIONS = {
+    FORWARD = "forward",
+    UP = "up",
+    DOWN = "down"
+}
+M.VALID_VERTICAL_DIRECTIONS = {
+    forward = true,
+    up = true,
+    down = true
+}
 M.LEFT_TURN = {
     north = "west",
     west = "south",
@@ -48,8 +59,6 @@ M.RIGHT_TURN = {
     south = "west",
     west = "north"
 }
-
-
 M.VECTORS = {
     north = {x = 0, z = -1},
     east = {x = 1, z = 0},
@@ -59,5 +68,25 @@ M.VECTORS = {
     down = {y = -1}
 }
 
+function M.validate_movement_direction(direction, level)
+    if not M.VALID_MOVEMENT_DIRECTIONS[direction] then
+        error('invalid movement direction, expected "forward", "back", "up", or "down"; received "' .. tostring(direction) .. '"', level or 2)
+    end
+end
+function M.validate_vertical_direction(direction, level)
+    if not M.VALID_VERTICAL_DIRECTIONS[direction] then
+        error('invalid dig direction, expected "forward", "up", or "down"; received "' .. tostring(direction) .. '"', level or 2)
+    end
+end
+function M.validate_turn_direction(direction, level)
+    if not M.VALID_TURN_DIRECTIONS[direction] then
+        error('invalid turn direction, expected "left" or "right"; received "' .. tostring(direction) .. '"', level or 2)
+    end
+end
+function M.validate_facing_direction(facing, level)
+    if not M.VALID_FACINGS[facing] then
+        error('invalid facing, expected "north", "east", "south" or "west"; received "' .. tostring(facing) .. '"', level or 2)
+    end
+end
 
 return M

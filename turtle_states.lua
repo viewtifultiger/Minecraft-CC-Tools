@@ -4,6 +4,7 @@ function M.create()
     return {
         facing = "north",
         fuel = turtle.getFuelLevel(),
+        depth = 0,
 
         position = { x = 0, y = 0, z = 0},
         inventory = {

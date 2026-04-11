@@ -3,23 +3,23 @@
 	
 	
 	-- TO DO --
+-- 0 create a way to save context onto floppy disks
 -- 1 create a UI to set the Y level, iterations, orientation, torch placement
--- 2 automate the number of iterations performed by making calculations based on fuel level and Y level
--- 3 create a way to refuel automatically
--- 7 find a way to navigate to the next hole position in order to dig upwards
--- 5 create a function that prints important stats
--- consider creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
--- consider creating your own turtle module
--- refactor error throw level on dig_square when calling fromm dig_hole_down
--- reconsider the return values of try_dig (succes, block data, and reason)
--- consider modifying the DIG_REASONS strings
--- do more testing on the turtle position
-
+-- 3.consider creating your own turtle module
+-- 2 creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
+-- 3 automate the number of iterations performed by making calculations based on fuel level and Y level
+-- 4 create a way to refuel automatically
+-- 5 find a way to navigate to the next hole position in order to dig upwards
+-- 6 create a hole_2x2.dig_hole_up() -- instead of returning the turtle after reaching bedrock, make the turtle dig a hole from bottom to top
+-- update the turtle tools and investigate the code tools
+-- 7 create a function that prints important stats
+-- consider finding a way to use context_builder.run_checks without worrying about the order of the check strings
+-- find a way to skip checks when using the public move function
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
 	
-	-- Working on: 
-		-- refactor the reason returns from dig_2x2_square and dig_2x2_hole
+	-- Working on:
+	-- update functions to use movment_core
 ]]
 
 local horizontal_2x2 = require("hole_2x2")
@@ -37,7 +37,7 @@ local starting_fuel = state.fuel
 ------------FUNCITONS-------------------------
 
 print("Fuel Level: ", starting_fuel)
-state.position = {x = 93, y = 95, z = 73}
+state.position = {x = 93, y = 95, z = 69}
 dig_config.iterations = 1
 
 -- 3 moves per level (going down/going up/sidemovement) * number of levels (current + 63 below y=0 + 2 for moving to next iteration) * total iterations 
@@ -52,6 +52,7 @@ end
 
 local success
 for i=1,dig_config.iterations do
+	-- success = horizontal_2x2.dig_hole_down(dig_config.next_hole_direction, context)
 	success = horizontal_2x2.dig_hole_down(dig_config.next_hole_direction, context)
 	movement.turn(dig_config.next_hole_direction, context)
 

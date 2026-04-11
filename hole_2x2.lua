@@ -1,7 +1,9 @@
 local tt = require("turtletools")
 local context_builder = require("context_builder")
 local movement = require("movement")
-local DIG_REASONS = tt.DIG_REASONS
+local direct = require("direction")
+local dig_core = require("dig_core")
+local DIG_REASONS = dig_core.DIG_REASONS
 
 local M = {}
 
@@ -28,49 +30,48 @@ end
 	--@param direction_to_mine string "left" | "right"
 	---@param context context_builder
 ]]
--------------------------------------------------------------------------------------------------------------------------------------------------------
-local function dig_2x2_square(start_mining_towards, context) --> boolean, turtle_state; state changes: horizontal_position, blocks_mined, blocks_mined_by_name
-	if start_mining_towards ~= "left" and start_mining_towards ~= "right" then
-		error('invalid direction, expected "left" or "right", got "' .. tostring(start_mining_towards) .. '"', 2)
-	end
+----------------------------------------------------------------------------
+--- ASSUMING THESE ARE VALIDATED: start_mining_towards, context, context.state
+--- "basic_structure", "stats", "blocks_mined", "blocks_mined_by_name", "blacklist"
+------------------------------------------------------------------------------
+local function dig_2x2_square(start_mining_towards, context) --> boolean: if square was completed; string: reason why the square failed; table context
 	-------------TABLES----------------------------------------------------------------------------
-	context = context or context_builder.create()
 	local state = context.state
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
-	local forward = movement.forward
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.horizontal_position = flip_horizontal_direction(start_mining_towards)
 	-------------LOCALS----------------------------------------------------------------------------
 	local dug, block_data, reason
 	-----------------------------------------------------------------------------------------------
-
+	-- 1st block
 	dug, block_data, reason = try_dig("forward", context)
 	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		return false, reason, context
 	end
-
+	-- 2nd block
 	movement.turn(start_mining_towards, context)
-
 	dug, block_data, reason = try_dig("forward", context)
 	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		movement.turn_opposite(start_mining_towards, context)
 		return false, reason, context
 	end
-
 	-- horizontal movement
-	forward(context)
+	movement.forward(context)
 	state.horizontal_position = flip_horizontal_direction(state.horizontal_position)
 	movement.turn_opposite(start_mining_towards, context)
-
+	-- 3rd block
 	dug, block_data, reason = try_dig("forward", context)
 	if not dug and STOP_REASONS[reason] then	-- found an invalid block
 		return false, reason, context
 	end
-
 	return true, nil, context
 end
+--[[
+]]
 function M.dig_2x2_square(start_mining_towards, context)
+	direct.validate_turn_direction(start_mining_towards, 3)
+	context = context or context_builder.create()
 	return dig_2x2_square(start_mining_towards, context)
 end
 
@@ -79,21 +80,17 @@ end
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function M.dig_hole_down(start_mining_towards, context) --> success boolean; context context_builder
+local function dig_hole_down(start_mining_towards, context) --> success boolean; context context_builder
 	-------------TABLES----------------------------------------------------------------------------
-	context = context or context_builder.create()
 	local state = context.state
 	local dig_config = context.dig_config
 	------------FUNCTIONS--------------------------------------------------------------------------
 	local try_dig = tt.try_dig
-	local dig_square = dig_2x2_square
-	local down = movement.down
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.depth = 0
 	-------------LOCALS----------------------------------------------------------------------------
 	local success, dug, block_data, reason
 	-----------------------------------------------------------------------------------------------
-
 	tt.selectEmptySlot()
 
 	while true do
@@ -110,9 +107,9 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 			break
 		end
 
-		down(context)
+		movement.down(context)
 
-		success, reason = dig_square(start_mining_towards, context)
+		success, reason = dig_2x2_square(start_mining_towards, context)
 		if STOP_REASONS[reason] then
 			break
 		end
@@ -129,6 +126,11 @@ function M.dig_hole_down(start_mining_towards, context) --> success boolean; con
 	tt.cleanInventory()
 	tt.returnToSurface(state.depth, context)
 	return true, context
+end
+function M.dig_hole_down(start_mining_towards, context)
+	direct.validate_turn_direction(start_mining_towards, 3)
+	context = context or context_builder.create()
+	return dig_hole_down(start_mining_towards, context)
 end
 
 return M
