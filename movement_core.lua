@@ -27,7 +27,7 @@ function M.move(direction, state) --> boolean Whether the turtle could successfu
             state.depth = state.depth + (-1 * vectors[direction].y)
         else
             position.x = position.x + (direction == directions.FORWARD and vectors[state.facing].x or -1 * (vectors[state.facing].x))
-            position.z = position.z + (direction == directions.FORWARD and vectors[state.facing].z or -1 * (vectors[state.facing].z))            
+            position.z = position.z + (direction == directions.FORWARD and vectors[state.facing].z or -1 * (vectors[state.facing].z))
         end
         state.fuel = state.fuel - 1
         state.stats.total_moves = state.stats.total_moves + 1
