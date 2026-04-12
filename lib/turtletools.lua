@@ -1,11 +1,9 @@
 --[[
 
 ]]
-local DEFAULT_BLACKLIST = require("_black_list_blocks")
 local context_builder = require("context_builder")
 local dig_core = require("dig_core")
-
-local movement = require("movement")
+local movement_core = require("movement_core")
 local direct = require("direction")
 
 local M = {}
@@ -157,7 +155,7 @@ function M.isInFront(block_name)
 	return false
 end
 function M.cleanInventory(overrides)
-	local discardList = dofile("_config_cleanInventory.lua")
+	local discardList = require("data.config_cleanInventory")
 	-- table: name, count
 	if overrides ~= nil then	
 		for key, value in pairs(overrides) do
@@ -183,9 +181,11 @@ function M.cleanInventory(overrides)
 	turtle.select(1)
 end
 
-function M.returnToSurface(depth, context)
+function M.return_to_surface(depth, context)
+    context_builder.run_checks(context, {"full_movement"}, 3)
+    direct.validate_facing_direction(context.state.facing, 3)
 	for i=1,depth do
-		movement.up(context)
+		movement_core.move(direct.MOVEMENT_DIRECTIONS.UP, context.state)
 	end
 end
 

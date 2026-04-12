@@ -1,4 +1,4 @@
-local DEFAULT_BLACKLIST = require("_black_list_blocks")
+local DEFAULT_BLACKLIST = require("data.blacklist_block_list")
 
 local M = {}
 
