@@ -1,8 +1,8 @@
-local tt = require("turtletools")
+local tt = require("ghost_tools")
 local context_builder = require("context_builder")
-local movement = require("movement")
+local movement = require("ghost.movement")
 local direct = require("direction")
-local dig_core = require("dig_core")
+local dig_core = require("ghost.dig")
 local DIG_REASONS = dig_core.DIG_REASONS
 
 local M = {}
@@ -38,7 +38,7 @@ local function dig_2x2_square(start_mining_towards, context) --> boolean: if squ
 	-------------TABLES----------------------------------------------------------------------------
 	local state = context.state
 	------------FUNCTIONS--------------------------------------------------------------------------
-	local try_dig = tt.try_dig
+	local try_dig = dig_core.try_dig
 	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
 	state.horizontal_position = flip_horizontal_direction(start_mining_towards)
 	-------------LOCALS----------------------------------------------------------------------------
@@ -85,13 +85,10 @@ local function dig_hole_down(start_mining_towards, context) --> success boolean;
 	local state = context.state
 	local dig_config = context.dig_config
 	------------FUNCTIONS--------------------------------------------------------------------------
-	local try_dig = tt.try_dig
-	--------CONTEXT-ASSIGNMENT---------------------------------------------------------------------
-	state.depth = 0
+	local try_dig = dig_core.try_dig
 	-------------LOCALS----------------------------------------------------------------------------
 	local success, dug, block_data, reason
 	-----------------------------------------------------------------------------------------------
-	tt.selectEmptySlot()
 
 	while true do
 		-----------------------SETTINGS-HANDLING---------------------------------------------------
@@ -124,13 +121,61 @@ local function dig_hole_down(start_mining_towards, context) --> success boolean;
 	end
 
 	tt.cleanInventory()
-	tt.returnToSurface(state.depth, context)
 	return true, context
 end
 function M.dig_hole_down(start_mining_towards, context)
 	direct.validate_turn_direction(start_mining_towards, 3)
 	context = context or context_builder.create()
 	return dig_hole_down(start_mining_towards, context)
+end
+
+local function dig_hole_up(start_mining_towards, context, target_y) --> success boolean; context context_builder
+	-------------TABLES----------------------------------------------------------------------------
+	local state = context.state
+	local dig_config = context.dig_config
+	------------FUNCTIONS--------------------------------------------------------------------------
+	local try_dig = dig_core.try_dig
+	-------------LOCALS----------------------------------------------------------------------------
+	local success, dug, block_data, reason
+	-----------------------------------------------------------------------------------------------
+
+	while state.position.y < target_y do
+		-----------------------SETTINGS-HANDLING---------------------------------------------------
+		if dig_config.place_torches and state.depth % 8 == 0 then
+			tt.torch()
+		end
+		if state.depth % 12 == 0 then
+			tt.cleanInventory()
+		end
+		------------------------MAIN DIG LOOP------------------------------------------------------
+		dug, block_data, reason = try_dig("up", context)
+		if STOP_REASONS[reason] then
+			break
+		end
+
+		movement.up(context)
+
+		success, reason = dig_2x2_square(start_mining_towards, context)
+		if STOP_REASONS[reason] then
+			break
+		end
+
+		start_mining_towards = flip_horizontal_direction(start_mining_towards)
+		-------------------------------------------------------------------------------------------
+	end
+
+	if reason == DIG_REASONS.DIG_FAILED then
+		error("DIGGING FAILED: " .. reason, 2)
+		return false, context
+	end
+
+	tt.cleanInventory()
+	return true, context
+end
+function M.dig_hole_up(start_mining_towards, context, target_y)
+	direct.validate_turn_direction(start_mining_towards, 3)
+	context = context or context_builder.create()
+	return dig_hole_up(start_mining_towards, context, target_y)
 end
 
 return M
