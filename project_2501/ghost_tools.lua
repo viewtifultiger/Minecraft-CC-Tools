@@ -1,8 +1,5 @@
---[[
-
-]]
 local context_builder = require("context_builder")
-local movement_core = require("movement_core")
+local movement_core = require("ghost.movement")
 local direct = require("direction")
 
 local M = {}

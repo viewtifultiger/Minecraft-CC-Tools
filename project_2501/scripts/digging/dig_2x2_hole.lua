@@ -21,6 +21,7 @@
 
 package.path = package.path .. ";/project_2501/?.lua"
 
+local dig_core = require("ghost.dig")
 local gt = require("ghost_tools")
 local horizontal_2x2 = require("hole_2x2")
 local context_builder = require("context_builder")
@@ -37,7 +38,7 @@ local starting_fuel = state.fuel
 local next_hole_direction = dig_config.next_hole_direction
 
 print("Fuel Level: ", starting_fuel)
-state.position = {x = 93, y = 95, z = 49}
+state.position = {x = 97, y = 95, z = 27}
 dig_config.iterations = 2
 
 -- 3 moves per level (going down/going up/sidemovement) * number of levels (current + 63 below y=0 + 2 for moving to next iteration) * total iterations 
@@ -63,11 +64,11 @@ for i=1, dig_config.iterations, 2 do
 	movement.turn(dig_config.next_hole_direction, context)
 	-- reposition turtle on the next hole location
 	if state.horizontal_position == dig_config.next_hole_direction then
-		gt.try_dig("forward", context)
+		dig_core.try_dig("forward", context)
 		movement.forward(context)
 	else
 		movement.forward(context)
-		gt.try_dig("forward", context)
+		dig_core.try_dig("forward", context)
 		movement.forward(context)
 	end
 	movement.turn_opposite(dig_config.next_hole_direction, context)
