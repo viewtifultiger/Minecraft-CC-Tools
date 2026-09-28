@@ -42,8 +42,7 @@ end
     ASSUMING THESE ARE VALIDATED: 	"basic_structure", "stats", "blocks_mined", "blocks_mined_by_name", "blacklist"
 ]]
 local function try_dig(direction, context) --> bool: is block is valid; table (block data): nil if no block data; string dig reason of bool
-	local blacklist = context.dig_config.blacklist
-	local blacklisted, block_data = M.inspect_if_blacklisted(direction, blacklist) -- CHECK IF PROPERLY USED
+	local blacklisted, block_data = M.inspect_if_blacklisted(direction, context)
     
 	if not blacklisted and block_data then
 		if LIQUID_BLOCKS[block_data.name] then
