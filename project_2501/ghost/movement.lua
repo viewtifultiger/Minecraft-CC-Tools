@@ -72,6 +72,7 @@ function M.move(direction, context)
     return move(direction, context.state)
 end
 function M.forward(context)
+    context = context or context_builder.create()
     return M.move(direct.MOVEMENT_DIRECTIONS.FORWARD, context)
 end
 function M.back(context)
@@ -91,11 +92,11 @@ end
 
 function M.turn(direction, context)
     direct.validate_turn_direction(direction, 3)
+    context = context or context_builder.create()
     context_builder.run_checks(context, {"state", "facing"}, 3)
     return turn(direction, context.state)
 end
 function M.turn_opposite(direction, context)
-    direct.validate_turn_direction(direction, 3)
     return M.turn(direct.OPPOSITE_TURN_DIRECTIONS[direction], context)
 end
 function M.turn_left(context)
