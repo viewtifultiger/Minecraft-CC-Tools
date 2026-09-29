@@ -6,11 +6,11 @@
 	-- TO DO --
 -- 0 create a way to save context onto floppy disks
 -- 1 create a UI to set the Y level, iterations, orientation, torch placement
--- 3.consider creating your own turtle module
 -- 2 creating a way to feed instructions to the turtle from a table or other data structure ex. (digf, movf, digup, movup, trnleft.., etc)
 -- 3 automate the number of iterations performed by making calculations based on fuel level and Y level
 -- 4 create a way to refuel automatically
 -- 7 create a function that prints important stats
+-- 5 find a proper way to begin mining up from bedrock level (making sure to complete a square first before repeating)
 
 	-- DEBUG NOTES--
 		-- find out why the same item can end up in different item slots even though the stacks are not full
@@ -58,9 +58,29 @@ for i=1, dig_config.iterations, 2 do
 		gt.return_to_surface(state.depth, context)
 		break
 	end
-	while (state.position.y < -59) do
+	--[[
+	1- down
+		if bedrock found, turtle has a clear space at its level, so we can go in a circle and mine down
+			move to 2, mine down, move to 4 mine down, move to 3 mine down
+	2 - forward
+		if berock found, turtle still hasnt cleared all blocks on current level.
+			try 3 and then 4
+	3 - side
+		if berock found, turtle needs to clear 4
+			move forward and turn and mine 4
+	4 - forward
+		if bedrock found, the turtle can still check the the next lavel down with no issue
+			check down, if the turtle can go down, mine the level below and return once bedrock is found
+	]]
+
+	while (state.position.y < -59) do -- rise above the max depth where bedrock spawns
 		movement.up(context)
+		-- 5 find a proper way to begin mining up from bedrock level (making sure to complete a square first before repeating)
 	end
+
+
+	-- begin mining upward loop
+
 	movement.turn(dig_config.next_hole_direction, context)
 	-- reposition turtle on the next hole location
 	if state.horizontal_position == dig_config.next_hole_direction then
