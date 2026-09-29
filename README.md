@@ -1,4 +1,4 @@
-# Minecraft-CC-Tools
+# Computer Craft: Tweaked - Kusanagi's Toolkit
 
 A toolkit for the Minecraft mod, Computer Craft: Tweaked.
 
