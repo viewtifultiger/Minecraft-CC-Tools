@@ -64,7 +64,7 @@ local function try_dig(direction, context) --> bool: is block is valid; table (b
 	end
 end
 
-----------------PUBLIC-FUNCTIONS-----------------------------------------------------------------------------------------------------------------------
+----------------API-----------------------------------------------------------------------------------------------------------------------
 --[[
     vertical_direction string (must be "forward", "up", or "down"): ; context table: context_builder.create() or similar and must have a blacklist
 ]]
@@ -79,11 +79,14 @@ end
         and must have stats
 ]]
 function M.try_dig(vertical_direction, context) --> boolean: if block was dug; table | nil (if empty block); string reason for the returned boolean
-    direct.validate_vertical_direction(vertical_direction, 3)
-    context = context
+    context = context or context_builder.create()
+	direct.validate_vertical_direction(vertical_direction, 3)
     context_builder.run_checks(context, {"basic_structure", "stats", "blocks_mined",
                                             "blocks_mined_by_name", "blacklist"}, 3) --check state, dig_config, blacklist, stats, blocks_mined, blocks_mined by name
     return try_dig(vertical_direction, context)
+end
+function M.down()
+	return M.try_dig("down")
 end
 
 return M
