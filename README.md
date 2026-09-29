@@ -5,9 +5,9 @@ A toolkit for the Minecraft mod, Computer Craft: Tweaked.
 Features:
   1. Tools:
      * module context_builder: -> ghost
-         creates context, validates for context table structures, and contains dig_config (digging configurations) and turtle_states (mining statistics such as fuel, blocks mined, facing direction, etc).
+         - creates context, validates for context table structures, and contains dig_config (digging configurations) and turtle_states (mining statistics such as fuel, blocks mined, facing direction, etc).
      * module hole_2x2:
-         methods include dig_hole_up, dig_hole_down, and dig_2x2_square that serve as configurable tools for automated vertical block-grid digging
+         - methods include dig_hole_up, dig_hole_down, and dig_2x2_square that serve as configurable tools for automated vertical block-grid digging
   3. Scripts:
     - dig_2x2_hole
        * Automation: Creates a ghost and digs any number of 2x2 holes, avoids bedrock, and tracks ghost statistics -> prints ghost context
