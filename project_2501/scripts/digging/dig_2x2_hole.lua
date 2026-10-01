@@ -19,13 +19,16 @@
 	
 ]]
 
-package.path = package.path .. ";/project_2501/?.lua"
+package.path = package.path .. ";/project_2501/?/init.lua;/project_2501/?.lua;"
 
-local dig_core = require("ghost.dig")
+local ghost = require("ghost")
+
+local dig_core = ghost.dig
+local movement = ghost.movmement
+
 local gt = require("ghost_tools")
 local horizontal_2x2 = require("hole_2x2")
 local context_builder = require("context_builder")
-local movement = require("ghost.movement")
 
 local context = context_builder.create()
 local state = context.state
